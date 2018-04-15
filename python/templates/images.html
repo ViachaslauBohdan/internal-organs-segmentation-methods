@@ -1,0 +1,28 @@
+<html>
+
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script>
+    let protocol =  window.location.protocol + '//'
+    let serverURL = window.location.host
+    let imagesURL = '/images'
+    $(document).ready(() => {
+      $("#image").mouseenter(() => {
+        let posting = $.post(protocol + serverURL + imagesURL, { parameter: 1 })
+        posting.done((data)=>{
+        $('#matlab').append(` ${data.result}`)
+        })
+      })
+    })
+  </script>
+  <title>oo</title>
+</head>
+
+<body>
+  <div style="margin:0 auto 0 auto; width: 400px">
+    <img id="image" src="/static/tomografiaguznerki.jpg" alt="tomography">
+  </div>
+  <div style = "text-align:center;font-size:30px;margin-top:20px;" id = "matlab"> Matlab response is:</div>
+</body>
+
+</html>

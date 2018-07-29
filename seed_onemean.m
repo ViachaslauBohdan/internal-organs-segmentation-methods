@@ -1,6 +1,6 @@
 close all;
 clc;
-filename= '6';
+filename= '8';
 
 % iminfo = dicominfo(filename)
 I = dicomread(filename);
@@ -24,9 +24,10 @@ imshow(J,[]);
 function [output_img,b]=regiongrowing(input_img,neigbr_number,x,y,reg_maxdist)
 
 if(exist('reg_maxdist','var')==0), reg_maxdist=0.12; end
-if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;
+if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts
     y=round(y(1)); x=round(x(1)); end
-
+x
+y
 
 output_img = zeros(size(input_img)); % Output 
 input_img_size = size(input_img); % Dimensions of input image

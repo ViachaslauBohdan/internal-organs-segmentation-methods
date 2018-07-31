@@ -1,4 +1,9 @@
-corn_gray = imread('corn.tif',3);
-imshow(corn_gray)
-[corn_indexed,map] = imread('corn.tif',1);
-imshow(corn_indexed,map)
+clear all;clc;
+arr = [5 115 0 0
+       1115 11115 0 0
+       0 0 0 0
+       0 0 0 0 ]
+
+         
+S = qtdecomp(arr,1)
+disp(full(S));

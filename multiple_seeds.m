@@ -1,7 +1,7 @@
 close all;
 clc;
 clear all;
-filename= '3';
+filename= '6';
 
 % iminfo = dicominfo(filename)
 I = dicomread(filename);
@@ -40,7 +40,7 @@ imshow(a);
    
 function [output_img,b]=regiongrowing(input_img,neigbr_number,y,x,number_of_seeds,reg_maxdist)
 
-if(exist('reg_maxdist','var')==0), reg_maxdist=0.19; end
+if(exist('reg_maxdist','var')==0), reg_maxdist=0.05; end
 % if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;
 %     y=round(y(1)); x=round(x(1)); end
 

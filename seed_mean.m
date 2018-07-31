@@ -1,6 +1,6 @@
 close all;
 clc;
-filename= '3';
+filename= '9';
 
 % iminfo = dicominfo(filename)
 I = dicomread(filename);

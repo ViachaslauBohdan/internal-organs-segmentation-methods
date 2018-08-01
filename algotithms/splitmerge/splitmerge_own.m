@@ -1,4 +1,4 @@
-function output_img = splitmerge(img, mindim, fun) 
+function output_img = splitmerge(img, mindim, cb1,cb2) 
 close all;
 
  
@@ -9,7 +9,7 @@ Q = 2^nextpow2(max(size(img)));
 img = padarray(img, [Q - M, Q - N], 'post'); 
  
 %Perform splitting first.  
-S = qtdecomp(img, @split_test, mindim, fun); 
+S = qtdecomp(img, @split_test, mindim, cb1); 
  
 % Now merge by looking at each quadregion and setting all its  
 % elements to 1 if the block satisfies the predicate. 
@@ -24,27 +24,28 @@ MARKER = zeros(size(img));
 for j = 1:Lmax  
    [vals, row, column] = qtgetblk(img, S, j); 
    if ~isempty(vals) 
-      % Check the predicate for each of the regions 
-      % of size K-by-K with coordinates given by vectors 
-      % r and c. 
       for k = 1:length(row) 
          xlow = row(k); ylow = column(k); 
          xhigh = xlow + j - 1; yhigh = ylow + j - 1; 
-         region = img(xlow:xhigh, ylow:yhigh); 
-         flag = feval(fun, region); 
-         if flag  
-            output_img(xlow:xhigh, ylow:yhigh) = 1; 
-            MARKER(xlow, ylow) = 1; 
-         end 
+         region1 = img(xlow:xhigh, ylow:yhigh); 
+%          flag = feval(cb2, region); 
+%          if flag  
+%             output_img(xlow:xhigh, ylow:yhigh) = 1; 
+%             MARKER(xlow, ylow) = 1; 
+%          end 
+        for u = j+1:Lmax
+            
+        end
       end 
+
+    
    end 
 end 
- 
+
 % Finally, obtain each connected region and label it with a 
 % different integer value using function bwlabel. 
-% output_img = bwlabel(imreconstruct(MARKER, output_img));
-output_img = bwlabel(output_img);
-
+% output_img = bwlabel(imreconstruct(MARKER, output_img))
+output_img = bwlabel( output_img); 
  
 % Crop and exit 
 output_img = output_img(1:M, 1:N); 

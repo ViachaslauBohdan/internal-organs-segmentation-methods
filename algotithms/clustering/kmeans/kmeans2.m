@@ -1,15 +1,23 @@
 close all;
-k=5;
-[a,img,ii] = kmeansclustering(I,k);
-
+k=7;
+[a,img,ii,img_hist,hist_value,cluster,cluster_count,closest_cluster,...
+    min_distance,imresult,clustersresult] = kmeansclustering(I,k);
+figure;
+imshow(I,[])
+figure;
+imhist(I);
 for i = 1:k
-    figure;
+    figure('Name',strcat('Cluster number:  ',int2str(i)));
     single_label = ii == i;
     imshow(label2rgb(single_label,@jet,'black'),[]);
 end
 
 
-function [clusters, result_image, clusterized_image] = kmeansclustering(im,  k)
+
+
+function [clusters, result_image, clusterized_image,img_hist,...
+    hist_value,cluster,cluster_count,closest_cluster,min_distance...
+    ,imresult,clustersresult] = kmeansclustering(im,  k)
 
 %histogram calculation
 img_hist = zeros(256,1);
@@ -29,11 +37,12 @@ for i=1:k
 end;
 
 old = zeros(k,1);
-while (sum(sum(abs(old-cluster))) >k)
+while (sum(sum(abs(old-cluster))) ~=0)
 	old = cluster;
 	closest_cluster = zeros(256,1);
 	min_distance = uint8(zeros(256,1));
 	min_distance = abs(hist_value-cluster(1));
+
 
 	%calculate the minimum distance to a cluster
 	for i=2:k
@@ -51,14 +60,15 @@ while (sum(sum(abs(old-cluster))) >k)
 	end;
 
 
-	for i=1:k
+	for i=1:k 
 		if (cluster_count(i) == 0)
 			cluster(i) = uint8(rand*255);
 		else
 			cluster(i) = uint8(sum(img_hist(closest_cluster==i).*hist_value(closest_cluster==i))/cluster_count(i));
+           % ŚREDNIA WAŻONA !!!
         end;
 	end;
-	
+% 	    pause;
 end;
 imresult=uint8(zeros(size(im)));
 for i=1:256

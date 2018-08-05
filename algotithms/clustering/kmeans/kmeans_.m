@@ -1,7 +1,8 @@
-k = 5;
+k = 6;
 [mu,mask] = kmeans(I,k);
 % mask=mat2gray(mask);% convert matrix to image 
 close all;
+
 for i = 1:k
     figure;
     single_label = mask == i;
@@ -9,9 +10,9 @@ for i = 1:k
 end
 
 
-function [mu,mask]=kmeans(ima,k)
+function [centroidsCoordinates,mask]=kmeans(image,k)
 figure;
-imshow(ima);
+imshow(image);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %   kmeans image segmentation
@@ -30,64 +31,69 @@ imshow(ima);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % check image
-ima=double(ima);
-copy=ima;         % make a copy
-ima=ima(:);       % vectorize ima
-mi=min(ima);      % deal with negative 
-ima=ima-mi+1;     % and zero values
+image=double(image);
+copy=image;         % make a copy
+image=image(:);       % vectorize ima
+minImageValue=min(image);      % deal with negative 
+image=image-minImageValue+1;     % and zero values
 
-s=length(ima);
+imageLength=length(image);
 
 % create image histogram
 
-m=max(ima)+1;
-h=zeros(1,m);
-hc=zeros(1,m);
+maxImageValue=max(image)+1;
+imageHistogram=zeros(1,maxImageValue);
+histClusters=zeros(1,maxImageValue);
 
-for i=1:s
-  if(ima(i)>0) h(ima(i))=h(ima(i))+1;end;
+for i=1:imageLength
+  if(image(i)>0) imageHistogram(image(i))=imageHistogram(image(i))+1;end; %imageHist = [323 222 894 19 190 ...]
 end
-ind=find(h);
-hl=length(ind);
+
+histIndexes=find(imageHistogram);
+histLength=length(histIndexes);
 
 % initiate centroids
 
-mu=(1:k)*m/(k+1);
+centroidsCoordinates=(1:k)*maxImageValue/(k+1); %[63 127 191]
 
 % start process
-
-while(true)
+p=0;
+while(p==0)
   
-  oldmu=mu;
+  oldCentroidsCoordinates=centroidsCoordinates;
   % current classification  
  
-  for i=1:hl
-      c=abs(ind(i)-mu);
-      cc=find(c==min(c));
-      hc(ind(i))=cc(1);
+  for i=1:histLength
+      distance=abs(histIndexes(i)-centroidsCoordinates);
+      cluster=find(distance==min(distance));
+      histClusters(histIndexes(i))=cluster(1); % [1 1 1 1 1 1 1 1 2 2 2 2 2 2 3 3 3  3 3 3 3 3 4 4 4 4 4 5 5 5  5 5 6 6 6 6]
   end
-  
+
   %recalculation of means  
   
   for i=1:k, 
-      a=find(hc==i);
-      mu(i)=sum(a.*h(a))/sum(h(a));
+      histClusterIndexes=find(histClusters==i); %[1 2 3 4 5 6 7 8]
+      
+      centroidsCoordinates(i)=...
+          sum(histClusterIndexes.*imageHistogram(histClusterIndexes))/sum(imageHistogram(histClusterIndexes));
+%           sum(histClusterIndexes)/length(histClusterIndexes);
+      
   end
   
-  if(mu==oldmu) break;end;
-  
+  if(centroidsCoordinates==oldCentroidsCoordinates) break;end;
+%   p=+1;
 end
 
 % calculate mask
-s=size(copy);
-mask=zeros(s);
-for i=1:s(1),
-for j=1:s(2),
-  c=abs(copy(i,j)-mu);
-  a=find(c==min(c));  
-  mask(i,j)=a(1);
+imageLength=size(copy);
+mask=zeros(imageLength);
+for i=1:imageLength(1),
+for j=1:imageLength(2),
+  distance=abs(copy(i,j)-centroidsCoordinates);
+  histClusterIndexes=find(distance==min(distance));  
+  mask(i,j)=histClusterIndexes(1);
 end
 end
-
-mu=mu+mi-1;   % recover real range
+centroidsCoordinates
+centroidsCoordinates=centroidsCoordinates+minImageValue-1;   % recover real range
 end

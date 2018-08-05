@@ -12,6 +12,14 @@
 % 		min_distance =min(min_distance,  abs(hist_value-cluster(i)))
 % end;
 
-f = figure;
-imshow(ans);
-imcontrast(f);
+% f = figure;
+% imshow(ans);
+% imcontrast(f);
+
+ im = imread('/home/slawek/obrazy/GRAINS1.BMP');
+ im1 = imcomplement(im);
+ imshow(im1)
+ p = roipoly
+ p2 = min(im2uint8(p),im1);
+ im2 = imreconstruct(p2,im1);
+ imshow([im1 p2 im2]);

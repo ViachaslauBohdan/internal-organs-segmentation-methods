@@ -23,3 +23,5 @@
  p2 = min(im2uint8(p),im1);
  im2 = imreconstruct(p2,im1);
  imshow([im1 p2 im2]);
+
+ 

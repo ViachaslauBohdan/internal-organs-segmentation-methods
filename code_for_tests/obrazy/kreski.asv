@@ -1,0 +1,29 @@
+ses1 = 13;
+ses2 = 31;
+ses3 = 3;
+se0 = strel('line',ses1,0);
+se45 = strel('line',ses1,45);
+se90 = strel('line',ses1,90);
+se135 = strel('line',ses1,135);
+im3 = imopen(im2,se0);
+im4 = imopen(im2,se45);
+im5 = imopen(im2,se90);
+im6 = imopen(im2,se135);
+im3a = imclose(im3,se90);
+im4a = imclose(im4,se135);
+im5a = imclose(im5,se0);
+im6a = imclose(im6,se45);
+im3b = imopen(im3a > 128,ones(ses3));
+im4b = imopen(im4a > 128,ones(ses3));
+im5b = imopen(im5a > 128,ones(ses3));
+im6b = imopen(im6a > 128,ones(ses3));
+imint = im3b & im4b & im5b & im6b;
+
+im3c = openrec(im3b,ones(ses2),1,8);
+im4c = openrec(im4b,ones(ses2),1,8);
+im5c = openrec(im5b,ones(ses2),1,8);
+im6c = openrec(im6b,ones(ses2),1,8);
+im7 = uint8(im3b)*64 + uint8(im4b)*128 + uint8(im5b)*192 + uint8(im6b)*255;
+
+
+

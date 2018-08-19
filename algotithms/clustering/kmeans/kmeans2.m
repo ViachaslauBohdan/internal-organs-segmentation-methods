@@ -39,6 +39,11 @@ while ~strcmp(user_response,'exit')
         addpath('morphology');
         [image_to_process] = fill_holes(image_to_process);
         render_image(image_to_process);
+    elseif strcmp(user_response,'3')
+        se_radius = input('enter structure element radius (example: 11):')
+        addpath('morphology');
+        [image_to_process] = open_by_reconst(image_to_process,se_radius);
+        render_image(image_to_process);
     end
 end
 

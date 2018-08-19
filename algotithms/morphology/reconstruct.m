@@ -1,9 +1,9 @@
-function [im_reconstructed] = reconstruct(image)
+function [output_img] = reconstruct(image)
 %RECONSTRUCT Summary of this function goes here
 %   Detailed explanation goes here
 
 marker = roipoly(image);
 % p2 = min(im2uint8(p),im1);
-im_reconstructed = imreconstruct(marker,image);
+output_img = imreconstruct(marker,image);
 end
 

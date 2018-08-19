@@ -32,7 +32,7 @@ ROI = figure('Name','filled holes');
 imshow(im_filled);
 
 marker = roipoly(im_filled);
-p2 = min(im2uint8(p),im1);
+% p2 = min(im2uint8(p),im1);
 im_seg = imreconstruct(marker,im_filled);
 figure;
 subplot(2,2,1);

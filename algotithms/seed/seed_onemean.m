@@ -1,6 +1,6 @@
 close all;
 clc;
-filename= '/home/slawek/Pulpit/magisterka/obrazy/6';
+filename= '/home/slawek/Pulpit/magisterka/test_images/images1/1';
 
 % iminfo = dicominfo(filename);
 I = dicomread(filename);

@@ -1,19 +1,52 @@
 close all;
 k=7;
-[a,img,ii,img_hist,hist_value,cluster,cluster_count,closest_cluster,...
-    min_distance,imresult,clustersresult] = kmeansclustering(I,k);
+num_of_clusters = input(['choose the number of clusters (e.x. 5):']);
+bin_images_array = {1,k};
+user_response = '';
+
+[a,img,im_result,img_hist,hist_value,cluster,cluster_count,closest_cluster,...
+    min_distance,imresult,clustersresult] = kmeansclustering(I,num_of_clusters);
 figure;
 imshow(I,[])
 figure;
 imhist(I);
-for i = 1:k
-    figure('Name',strcat('Cluster number:  ',int2str(i)));
-    single_label = ii == i;
-    imshow(label2rgb(single_label,@jet,'black'),[]);
+figure;
+for i = 1:num_of_clusters
+    bin_images_array{1,i} = im_result == i;
+    subplot(floor(sqrt(num_of_clusters)),floor(sqrt(num_of_clusters))+2,i);
+    imshow(label2rgb(bin_images_array{1,i},@jet,'black'),[]);
+    title(strcat('cluster',{' '},int2str(i)));
+end
+
+clustered_img_number = input(['choose the number ','between 1 and ',int2str(k),' of a clustered image for further processing (e.x 3):'],'s');
+num = str2num(clustered_img_number);
+figure;
+imshow(bin_images_array{1,num});
+image_to_process = bin_images_array{1,num};
+while ~strcmp(user_response,'exit')
+    user_response = input(['choose the number of an action (1,2,3 or 4)' newline ...
+        '1) perform image reconstruction' newline ...
+        '2) perform holes filling' newline ...
+        '3) opening by reconstruction' newline ...
+        '4) closing by reconstruction' newline ...
+        '5) exit' newline ...
+        ':'],'s');
+    if strcmp(user_response,'1')
+        addpath('morphology');
+        [image_to_process] = reconstruct(image_to_process);
+        render_image(image_to_process);
+    elseif strcmp(user_response,'2')
+        addpath('morphology');
+        [image_to_process] = fill_holes(image_to_process);
+        render_image(image_to_process);
+    end
 end
 
 
-
+function render_image(image)
+    figure;
+    imshow(image);
+end
 
 function [clusters, result_image, clusterized_image,img_hist,...
     hist_value,cluster,cluster_count,closest_cluster,min_distance...

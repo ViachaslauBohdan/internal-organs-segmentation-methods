@@ -1,8 +1,8 @@
 close all;
-k=7;
+I = read_image(5);
+% k=7;
 num_of_clusters = input(['choose the number of clusters (e.x. 5):']);
-bin_images_array = {1,k};
-user_response = '';
+bin_images_array = {1,num_of_clusters};
 
 [a,img,im_result,img_hist,hist_value,cluster,cluster_count,closest_cluster,...
     min_distance,imresult,clustersresult] = kmeansclustering(I,num_of_clusters);
@@ -23,35 +23,14 @@ num = str2num(clustered_img_number);
 figure;
 imshow(bin_images_array{1,num});
 image_to_process = bin_images_array{1,num};
-while ~strcmp(user_response,'exit')
-    user_response = input(['choose the number of an action (1,2,3 or 4)' newline ...
-        '1) perform image reconstruction' newline ...
-        '2) perform holes filling' newline ...
-        '3) opening by reconstruction' newline ...
-        '4) closing by reconstruction' newline ...
-        '5) exit' newline ...
-        ':'],'s');
-    if strcmp(user_response,'1')
-        addpath('morphology');
-        [image_to_process] = reconstruct(image_to_process);
-        render_image(image_to_process);
-    elseif strcmp(user_response,'2')
-        addpath('morphology');
-        [image_to_process] = fill_holes(image_to_process);
-        render_image(image_to_process);
-    elseif strcmp(user_response,'3')
-        se_radius = input('enter structure element radius (example: 11):')
-        addpath('morphology');
-        [image_to_process] = open_by_reconst(image_to_process,se_radius);
-        render_image(image_to_process);
-    end
-end
+
+addpath('morphology');
+seg_image = main(image_to_process);
+
+render_seg_subplots(I,seg_image);
 
 
-function render_image(image)
-    figure;
-    imshow(image);
-end
+
 
 function [clusters, result_image, clusterized_image,img_hist,...
     hist_value,cluster,cluster_count,closest_cluster,min_distance...

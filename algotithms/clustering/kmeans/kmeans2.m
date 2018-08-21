@@ -1,5 +1,5 @@
 close all;
-I = read_image(5);
+I = read_image(3);
 % k=7;
 num_of_clusters = input(['choose the number of clusters (e.x. 5):']);
 bin_images_array = {1,num_of_clusters};
@@ -18,7 +18,7 @@ for i = 1:num_of_clusters
     title(strcat('cluster',{' '},int2str(i)));
 end
 
-clustered_img_number = input(['choose the number ','between 1 and ',int2str(k),' of a clustered image for further processing (e.x 3):'],'s');
+clustered_img_number = input(['choose the number ','between 1 and ',int2str(num_of_clusters),' of a clustered image for further processing (e.x 3):'],'s');
 num = str2num(clustered_img_number);
 figure;
 imshow(bin_images_array{1,num});

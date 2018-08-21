@@ -1,8 +1,9 @@
 function [L,C,U,LUT,H,Imin,Imax] = DemoFCM
     % Segment a sample 2D image into 3 classes using fuzzy c-means algorithm. 
     % Note that similar syntax would be used for c-means based segmentation. 
-
+    addpath('algorithms');
     im = read_image(2);
+    
     % im=imread('cameraman.tif'); % sample image
     [L,C,U,LUT,H,Imin,Imax]=FastFCMeans(im,3); % perform segmentation
 

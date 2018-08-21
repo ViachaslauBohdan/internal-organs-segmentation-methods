@@ -1,28 +1,66 @@
 <html>
 
 <head>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script>
-    let protocol =  window.location.protocol + '//'
-    let serverURL = window.location.host
-    let imagesURL = '/images'
-    $(document).ready(() => {
-      $("#image").mouseenter(() => {
-        let posting = $.post(protocol + serverURL + imagesURL, { parameter: 1 })
-        posting.done((data)=>{
-        $('#matlab').append(` ${data.result}`)
-        })
-      })
-    })
-  </script>
-  <title>oo</title>
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+  <script src="../static/jquery-3.3.1.js"></script>  
+  <script src="../static/cornerstoneWADOImageLoaderWebWorker.min.js"></script>  
+  
+  <script src="https://unpkg.com/dicom-parser@1.8.1/dist/dicomParser.min.js"></script>
+  <script src="https://unpkg.com/cornerstone-core/dist/cornerstone.min.js"></script>
+  <script src="https://unpkg.com/cornerstone-tools"></script>
+  <script src="https://unpkg.com/cornerstone-wado-image-loader@2.1.4/dist/cornerstoneWADOImageLoader.min.js"></script>
+
 </head>
 
 <body>
+  <div id="demo"></div>
+  <p id="para1">Some text here</p>
   <div style="margin:0 auto 0 auto; width: 400px">
-    <img id="image" src="/static/tomografiaguznerki.jpg" alt="tomography">
+    <img id="image" src="../static/tomografiaguznerki.jpg" alt="tomography">
   </div>
-  <div style = "text-align:center;font-size:30px;margin-top:20px;" id = "matlab"> Matlab response is:</div>
+  <div style="text-align:center;font-size:30px;margin-top:20px;" id="matlab"> Matlab response is:</div>
+
+  <script>
+    let protocol = window.location.protocol + '//'
+    let serverURL = window.location.host
+    let imagesURL = '/images'
+    // $(document).ready(() => {
+    //   $("#image").mouseenter(() => {
+    //     let posting = $.post(protocol + serverURL + imagesURL, { parameter: 1 })
+    //     posting.done((data) => {
+    //       $('#matlab').append(` ${data.result}`)
+    //     })
+    //   })
+    // })
+
+    const element = document.getElementById('demo');
+    const imageId = 'https://example.url.com/image.dcm';
+    // console.log($)
+
+    cornerstone.enable(element);
+    cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
+    var config = {
+        webWorkerPath : '../static/cornerstoneWADOImageLoaderWebWorker.js',
+        taskConfiguration: {
+            'decodeTask' : {
+                codecsPath: '../static/cornerstoneWADOImageLoaderCodecs.js'
+            }
+        }
+    };
+    cornerstoneWADOImageLoader.webWorkerManager.initialize(config);
+
+    cornerstone.loadAndCacheImage(imageId).then(function (image) {
+      // cornerstone.displayImage(element, image);
+
+      // Enable our tools
+      cornerstoneTools.mouseInput.enable(element);
+      cornerstoneTools.mouseWheelInput.enable(element);
+      cornerstoneTools.wwwc.activate(element, 1); // Left Click
+      cornerstoneTools.pan.activate(element, 2); // Middle Click
+      cornerstoneTools.zoom.activate(element, 4); // Right Click
+      cornerstoneTools.zoomWheel.activate(element); // Mouse Wheel
+    });
+  </script>
 </body>
 
 </html>

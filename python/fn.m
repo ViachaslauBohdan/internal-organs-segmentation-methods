@@ -18,4 +18,5 @@ function back = processing(o)
  figure;
  image(auto_seg);
  back = 'segmentation perfomed';
+ close all
 end

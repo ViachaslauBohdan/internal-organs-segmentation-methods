@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+  }
+
+  header {
+    background: black;
+    color: #91b9cd;
+    text-align: center;
+    height: 6%;
+    position: relative;
+  }
+
+  header span:first-child {
+    display: inline-block;
+    position: absolute;
+    left: 0;
+    bottom: 16px;
+    font-size: 25px;
+  }
+
+  header span:last-child {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    font-size: 13px;
+  }
+
+  #content {
+    background: #151a1f;
+    height: 100%;
+    padding-left: 15%;
+  }
+
+  input[type="file"] {
+    color: white;
+  }
+
+  #file-input {
+    padding-top: 15px;
+    margin-bottom: 15px;
+  }

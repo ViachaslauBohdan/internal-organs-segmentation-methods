@@ -8,7 +8,7 @@ app = Flask(__name__)
 # app._static_folder = './static'
 CORS(app)
 
-eng = matlab.engine.start_matlab()
+matlab_engine = matlab.engine.start_matlab()
 
 
 print('ret works')
@@ -19,12 +19,12 @@ def hello():
 
 @app.route("/images")
 def images():
-        return render_template('images.html')
+        return render_template('main.html')
 
 @app.route("/images",methods = ['POST'])
 def showResult():
     if request.method == 'POST':
-        callback = eng.fn(1.0,5.0)
+        callback = matlab_engine.fn(1.0,5.0)
         return jsonify({'result':callback})
 
 @app.route("/matlab")

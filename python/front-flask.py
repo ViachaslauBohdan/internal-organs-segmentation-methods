@@ -1,10 +1,11 @@
 import matlab.engine
-from flask import Flask
+from flask import Flask,url_for
 from flask import render_template, request
 from flask import jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
+# app._static_folder = './static'
 CORS(app)
 
 eng = matlab.engine.start_matlab()

@@ -40,3 +40,15 @@ body {
     padding-top: 15px;
     margin-bottom: 15px;
   }
+
+  #processing-button-wrapper {
+    margin-top: 15px;
+  }
+
+  #processing-button-wrapper > button {
+    background: #20a5d6;
+    border-radius: 5px;
+    border: none;
+    height: 29px;
+    color: white;
+  }

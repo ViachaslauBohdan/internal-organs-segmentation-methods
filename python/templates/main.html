@@ -29,7 +29,46 @@
       <div id="image" style="width:512px;height:512px;top:0px;left:0px; position:absolute">
       </div>
     </div>
+    <div id="processing-button-wrapper">
+      <button id="processing-button">START PROCESSING</button>
+    </div>
   </div>
+
+  <script>
+    var fileName
+    $(document).ready(function () {
+
+      $("#processing-button").click(() => {
+        const url = protocol + serverURL + imagesURL;
+        console.log(fileName)
+        const payload = { fileName: fileName };
+
+        $.ajax({
+          url: url,
+          type: "POST",
+          data: JSON.stringify(payload),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+        })
+          .done(function (res) {
+            console.log(res)
+          })
+          .fail(function (err) {
+            console.log(err)
+          })
+
+
+      })
+
+      $('input[type="file"]').change(function (e) {
+        fileName = e.target.files[0].name;
+        console.log(fileName, '-----------------')
+
+      });
+      console.log(fileName, '-----------------')
+
+    });
+  </script>
 
   <script>
     const protocol = window.location.protocol + '//'
@@ -237,18 +276,6 @@
     //     document.getElementById('collapseInfo').style.display = 'none';
     //   }
     // });
-  </script>
-
-  <script>
-    $(document).ready(() => {
-      $("#content").mouseenter(() => {
-        let posting = $.post(protocol + serverURL + imagesURL, { parameter: 1 })
-        posting.done((data) => {
-          console.log(data)
-          // $('#matlab').append(` ${data.result}`)
-        })
-      })
-    })
   </script>
 
 </body>

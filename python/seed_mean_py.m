@@ -1,6 +1,7 @@
 function seed_mean_py(data_py)
 
 close all;
+disp('1')
 I = read_image_double_py(data_py);
 
 % iminfo = dicominfo(filename)

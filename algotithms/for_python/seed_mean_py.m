@@ -1,8 +1,10 @@
-function seed_mean_py(data_py,reg_maxdist)
+function seed_mean_py(image_name,reg_maxdist,dist_type)
+dist_type
 
+reg_maxdist = reg_maxdist / 100; % range must be between 0-1
 close all;
 disp('1')
-I = read_image_double_py(data_py);
+I = read_image_double_py(image_name);
 
 % iminfo = dicominfo(filename)
 % I = dicomread(filename);
@@ -65,7 +67,7 @@ end
 % Start regiogrowing until distance between regio and posible new pixels become
 % higher than a certain treshold
 l=0;
-while(pixdist<reg_maxdist && region_size<numel(input_img) && l<10)
+while(pixdist<reg_maxdist && region_size<numel(input_img))
 
     % Add new neighbors pixels
     for j=1:neigbr_number,

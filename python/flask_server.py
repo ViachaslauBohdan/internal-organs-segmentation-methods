@@ -22,14 +22,15 @@ def hello():
 def images():
         return render_template('main.html')
 
-@app.route("/images",methods = ['POST'])
-def showResult():
-    if request.method == 'POST':
-        payload  = request.get_json()
-        # callback = matlab_engine.fn(1.0,5.0)
-        image_name = normalize_unicode_string(payload['fileName'])
-        print(image_name,'---------------------------------------')
-        matlab_engine.seed_mean_py(image_name,nargout=0)     
+@app.route("/seed",methods = ['GET'])
+def showResult():    
+    if request.method == 'GET':
+        # payload  = request.get_json()
+        image_name = normalize_unicode_string(request.args.get('fileName'))
+        distance_ratio = normalize_unicode_string(request.args.get('ratio'))
+        distance_type = normalize_unicode_string(request.args.get('distance'))
+
+        matlab_engine.seed_mean_py(image_name,float(distance_ratio),distance_type,nargout=0)     
         return jsonify({'result':'callback'})
 
 @app.route("/matlab")

@@ -1,8 +1,10 @@
-function seed_mean_py(data_py)
+function seed_mean_py(image_name,reg_maxdist,dist_type)
+dist_type
 
+reg_maxdist = reg_maxdist / 100; % range must be between 0-1
 close all;
 disp('1')
-I = read_image_double_py(data_py);
+I = read_image_double_py(image_name);
 
 % iminfo = dicominfo(filename)
 % I = dicomread(filename);
@@ -16,7 +18,7 @@ I = read_image_double_py(data_py);
 
 neigbr_number = 4;
 
-J = regiongrowing(I,neigbr_number); 
+J = regiongrowing(I,neigbr_number,reg_maxdist); 
 figure(1);
 imshow(I+J,[]);
 figure(3);
@@ -26,7 +28,7 @@ end
 
 
 
-function [output_img,b]=regiongrowing(input_img,neigbr_number,x,y,reg_maxdist)
+function [output_img,b]=regiongrowing(input_img,neigbr_number,reg_maxdist,x,y)
 
 if(exist('reg_maxdist','var')==0), reg_maxdist=0.1; end
 if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;
@@ -65,7 +67,7 @@ end
 % Start regiogrowing until distance between regio and posible new pixels become
 % higher than a certain treshold
 l=0;
-while(pixdist<reg_maxdist && region_size<numel(input_img) && l<10)
+while(pixdist<reg_maxdist && region_size<numel(input_img))
 
     % Add new neighbors pixels
     for j=1:neigbr_number,

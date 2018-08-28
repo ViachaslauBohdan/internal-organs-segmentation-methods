@@ -29,6 +29,22 @@
       <div id="image" style="width:512px;height:512px;top:0px;left:0px; position:absolute">
       </div>
     </div>
+    <div id="seed-wrapper">
+      <div>
+        <button id="seed-button">REGION GROWING</button>
+      </div>
+      <div id="seed-inputs-wrapper" style="margin-top:15px;">
+        <div style="margin-bottom:2px">
+          <span>Region standart:</span>
+          <input name="seed" value="mean" type="radio" checked>Mean
+          <input name="seed" value="median" type="radio">Median
+        </div>
+        <div>
+          <span>Distance ratio:</span>
+          <input type="number" min="1" max="100">
+        </div>
+      </div>
+    </div>
     <div id="processing-button-wrapper">
       <button id="processing-button">START PROCESSING</button>
     </div>
@@ -37,16 +53,16 @@
   <script>
     var fileName
     $(document).ready(function () {
-
       $("#processing-button").click(() => {
-        const url = protocol + serverURL + imagesURL;
-        console.log(fileName)
-        const payload = { fileName: fileName };
+        const radioChecked = $("input[type=radio][name=seed]:checked").val()
+        const ratio = $("input[type=number]").val()
+        const url = protocol + serverURL + '/seed'
+        const params = { fileName, ratio, distance: radioChecked };
 
         $.ajax({
           url: url,
-          type: "POST",
-          data: JSON.stringify(payload),
+          type: "GET",
+          data: params,
           contentType: "application/json; charset=utf-8",
           dataType: "json",
         })
@@ -56,16 +72,19 @@
           .fail(function (err) {
             console.log(err)
           })
-
-
       })
 
       $('input[type="file"]').change(function (e) {
         fileName = e.target.files[0].name;
-        console.log(fileName, '-----------------')
+      })
 
-      });
-    });
+      $('#seed-button').click(function () {
+        $(this).css({ 'background': '#21a522' })
+        $('#seed-inputs-wrapper').css({
+          'display': 'inherit'
+        })
+      })
+    })
   </script>
 
   <script>

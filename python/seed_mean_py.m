@@ -1,4 +1,4 @@
-function seed_mean_py(image_name,reg_maxdist,dist_type)
+function seed_mean_py(image_name,reg_maxdist,dist_type,neigbr_number)
 dist_type
 
 reg_maxdist = reg_maxdist / 100; % range must be between 0-1
@@ -16,7 +16,7 @@ I = read_image_double_py(image_name);
 % prompt = 'Enter number of neighbours (ex. 4 or 8) ';
 % neigbr_number = input(prompt)
 
-neigbr_number = 4;
+% neigbr_number = 4;
 
 J = regiongrowing(I,neigbr_number,reg_maxdist); 
 figure(1);

@@ -39,6 +39,11 @@
           <input name="seed" value="mean" type="radio" checked>Mean
           <input name="seed" value="median" type="radio">Median
         </div>
+        <div style="margin-bottom:2px">
+            <span style="margin-right:9px;">Neighborhood:</span>
+            <input name="neighbours" value="4" type="radio" checked>4
+            <input name="neighbours" value="8" type="radio">8
+          </div>
         <div>
           <span>Distance ratio:</span>
           <input type="number" min="1" max="100">
@@ -55,9 +60,10 @@
     $(document).ready(function () {
       $("#processing-button").click(() => {
         const radioChecked = $("input[type=radio][name=seed]:checked").val()
+        const neighboursNumber = $("input[type=radio][name='neighbours']:checked").val()
         const ratio = $("input[type=number]").val()
         const url = protocol + serverURL + '/seed'
-        const params = { fileName, ratio, distance: radioChecked };
+        const params = { fileName, ratio, neighboursNumber,distance: radioChecked };
 
         $.ajax({
           url: url,

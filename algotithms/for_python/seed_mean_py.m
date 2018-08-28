@@ -1,4 +1,4 @@
-function seed_mean_py(data_py)
+function seed_mean_py(data_py,reg_maxdist)
 
 close all;
 disp('1')
@@ -16,7 +16,7 @@ I = read_image_double_py(data_py);
 
 neigbr_number = 4;
 
-J = regiongrowing(I,neigbr_number); 
+J = regiongrowing(I,neigbr_number,reg_maxdist); 
 figure(1);
 imshow(I+J,[]);
 figure(3);
@@ -26,7 +26,7 @@ end
 
 
 
-function [output_img,b]=regiongrowing(input_img,neigbr_number,x,y,reg_maxdist)
+function [output_img,b]=regiongrowing(input_img,neigbr_number,reg_maxdist,x,y)
 
 if(exist('reg_maxdist','var')==0), reg_maxdist=0.1; end
 if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;

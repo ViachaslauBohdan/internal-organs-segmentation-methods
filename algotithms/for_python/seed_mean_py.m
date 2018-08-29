@@ -1,4 +1,4 @@
-function seed_mean_py(image_name,reg_maxdist,dist_type,neigbr_number)
+function [J] = seed_mean_py(image_name,reg_maxdist,dist_type,neigbr_number)
 dist_type
 
 reg_maxdist = reg_maxdist / 100; % range must be between 0-1

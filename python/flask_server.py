@@ -32,8 +32,9 @@ def showResult():
         neigbr_number = normalize_unicode_string(request.args.get('neighboursNumber'))
         
 
-        matlab_engine.seed_mean_py(image_name,float(distance_ratio),distance_type,int(neigbr_number),nargout=0)     
-        return jsonify({'result':'callback'})
+        outpit_img = matlab_engine.seed_mean_py(image_name,float(distance_ratio),distance_type,int(neigbr_number),nargout=1)   
+        print(outpit_img);  
+        return jsonify({'result':str(outpit_img)})
 
 @app.route("/matlab")
 def matlab():

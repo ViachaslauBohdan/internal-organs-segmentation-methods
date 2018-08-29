@@ -14,8 +14,9 @@ $(document).ready(function () {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
     })
-      .done(function (res) {
-        console.log(res)
+      .done(function (jsonRes) {
+        const res = JSON.parse(jsonRes)
+        // console.log(res,res.result.split(" "))
       })
       .fail(function (err) {
         console.log(err)

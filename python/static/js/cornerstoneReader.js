@@ -8,10 +8,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
     cornerstoneWADOImageLoader.external.cornerstone = cornerstone;
     var config = {
-        webWorkerPath: '../static/cornerstoneWADOImageLoaderWebWorker.js',
+        webWorkerPath: '../../static/deps/cornerstoneWADOImageLoaderWebWorker.js',
         taskConfiguration: {
             'decodeTask': {
-                codecsPath: '../static/cornerstoneWADOImageLoaderCodecs.js'
+                codecsPath: '../../static/deps/cornerstoneWADOImageLoaderCodecs.js'
             }
         }
     };

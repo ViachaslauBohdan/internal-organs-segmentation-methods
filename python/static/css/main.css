@@ -63,6 +63,19 @@ input[type="number"] {
   min-width: 125px;
 }
 
-#seed-inputs-wrapper {
+#seed-inputs-wrapper,#kmeans-inputs-wrapper {
   display: none;
+}
+
+#seed-wrapper,#kmeans-wrapper {
+  margin-bottom: 20px;
+}
+
+#seed-button,#kmeans-button {
+  width: 140px;
+}
+
+button {
+  background: #20a5d6;
+  color: white;
 }

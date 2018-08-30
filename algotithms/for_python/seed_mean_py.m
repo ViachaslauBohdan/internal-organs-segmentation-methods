@@ -1,5 +1,4 @@
 function [J] = seed_mean_py(image_name,reg_maxdist,dist_type,neigbr_number)
-dist_type
 
 reg_maxdist = reg_maxdist / 100; % range must be between 0-1
 close all;
@@ -18,27 +17,31 @@ I = read_image_double_py(image_name);
 
 % neigbr_number = 4;
 
-J = regiongrowing(I,neigbr_number,reg_maxdist); 
+J = regiongrowing(I,neigbr_number,reg_maxdist,dist_type); 
 figure(1);
 imshow(I+J,[]);
 figure(3);
 imshow(J,[]);
+J = [true,false]
 end
 
 
 
 
-function [output_img,b]=regiongrowing(input_img,neigbr_number,reg_maxdist,x,y)
+function [output_img]=regiongrowing(input_img,neigbr_number,reg_maxdist,dist_type,x,y)
 
 if(exist('reg_maxdist','var')==0), reg_maxdist=0.1; end
 if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;
     y=round(y(1)); x=round(x(1)); end
 
-
 output_img = zeros(size(input_img)); % Output 
 input_img_size = size(input_img); % Dimensions of input image
 
-reg_mean = input_img(x,y); % The mean of the segmented region
+if(strcmp(dist_type,'mean'))
+    reg_mean = input_img(x,y); % The mean of the segmented region
+else
+    reg_median = input_img(x,y); % The median of the segmented region
+end
 region_size = 1; % Number of pixels in region
 
 % Free memory to store neighbours of the (segmented) region
@@ -66,11 +69,11 @@ end
 
 % Start regiogrowing until distance between regio and posible new pixels become
 % higher than a certain treshold
-l=0;
+
 while(pixdist<reg_maxdist && region_size<numel(input_img))
 
     % Add new neighbors pixels
-    for j=1:neigbr_number,
+    for j=1:neigbr_number
         % Calculate the neighbour coordinate
         xn = x +neigb_locations(j,1); yn = y +neigb_locations(j,2);
         
@@ -89,12 +92,22 @@ while(pixdist<reg_maxdist && region_size<numel(input_img))
     if(memory_possesed+10>memory_free), memory_free=memory_free+10000; neigbor_list((memory_possesed+1):memory_free,:)=0; end
     
     % Add pixel with intensity nearest to the mean of the region, to the region
-    dist = abs(neigbor_list(1:memory_possesed,3)-reg_mean);
+    if(strcmp(dist_type,'mean'))
+        dist = abs(neigbor_list(1:memory_possesed,3)-reg_mean);
+    else
+        dist = abs(neigbor_list(1:memory_possesed,3)-reg_median);
+    end
     [pixdist, index] = min(dist);
     output_img(x,y)=2; region_size=region_size+1;
-  
-    % Calculate the new mean of the region
-    reg_mean= (reg_mean*region_size + neigbor_list(index,3))/(region_size+1);
+    
+    if(strcmp(dist_type,'mean'))
+        % Calculate the new mean of the region
+        reg_mean= (reg_mean*region_size + neigbor_list(index,3))/(region_size+1);
+    else
+        ind = find(neigbor_list(:,3)>0);
+        neigbor_list(ind,3);
+        reg_median = median(neigbor_list(ind,3));
+    end
     
     % Save the x and y coordinates of the pixel (for the neighbour add proccess)
     x = neigbor_list(index,1); y = neigbor_list(index,2);

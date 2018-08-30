@@ -1,12 +1,14 @@
 close all;
 clc;
-filename= '1';
 
+I = read_image_double(3);
+
+% filename= '1';
 % iminfo = dicominfo(filename)
-I = dicomread(filename);
-I = I + 2000;
-I = rescale(I,0,1);
-I = imadjust(I,[0.7 0.8],[0 1]);
+% I = dicomread(filename);
+% I = I + 2000;
+% I = rescale(I,0,1);
+% I = imadjust(I,[0.7 0.8],[0 1]);
 
 
 prompt = 'Enter number of neighbours (ex. 4 or 8) ';
@@ -32,7 +34,7 @@ output_img = zeros(size(input_img)); % Output
 input_img_size = size(input_img); % Dimensions of input image
 
 reg_median = input_img(x,y) % The mean of the segmented region
-p = reg_median
+
 region_size = 1; % Number of pixels in region
 
 % Free memory to store neighbours of the (segmented) region
@@ -94,8 +96,6 @@ while(pixdist<reg_maxdist && region_size<numel(input_img))
     neigbor_list(ind,3);
     
     reg_median = median(neigbor_list(ind,3));
-    p;
-    
     
     % Save the x and y coordinates of the pixel (for the neighbour add proccess)
     x = neigbor_list(index,1); y = neigbor_list(index,2);

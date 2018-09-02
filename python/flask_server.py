@@ -37,7 +37,7 @@ def startSeedProcessing():
         
 
         output_img = matlab_engine.seed_mean_py(image_name,float(distance_ratio),distance_type,int(neigbr_number),nargout=1) 
-        print('START',output_img,type(output_img),'FINISH')
+        print('START',output_img,'FINISH')
         return jsonify({'result':output_img})
 
 

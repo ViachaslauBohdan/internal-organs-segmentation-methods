@@ -8,6 +8,7 @@
   <script src="../static/deps/dicomParser.js"></script>
   <script src="../static/deps/cornerstone.js"></script>
   <script src="../static/deps/cornerstoneTools.min.js"></script>
+  <script async src="../static/deps/opencv.js" onload="onOpenCvReady();"></script>
 
   <link rel="stylesheet" type="text/css" href="../static/css/main.css">
 
@@ -23,10 +24,18 @@
     <div id="file-input">
       <input type="file" id="selectFile">
     </div>
+    <div id="frames-wrapper" style="position:relative;height:512px">
+      <div style="width:512px;height:512px;position:absolute;left:0;color: white;display:inline-block;border-style:solid;border-color:black;"
+        oncontextmenu="return false" class="disable-selection noIbar" unselectable="on" onselectstart="return false;" onmousedown="return false;">
+        <div id="image" style="width:512px;height:512px;top:0px;left:0px; position:absolute">
+        </div>
+      </div>
 
-    <div style="width:512px;height:512px;position:relative;color: white;display:inline-block;border-style:solid;border-color:black;"
-      oncontextmenu="return false" class="disable-selection noIbar" unselectable="on" onselectstart="return false;" onmousedown="return false;">
-      <div id="image" style="width:512px;height:512px;top:0px;left:0px; position:absolute">
+      <div style="width:512px;height:512px;position:absolute;right:0;color: white;display:inline-block;border-style:solid;border-color:black;"
+        oncontextmenu="return false" class="disable-selection noIbar" unselectable="on" onselectstart="return false;" onmousedown="return false;">
+        <div id="processed-image" style="width:512px;height:512px;top:0px;right:0px; position:absolute">
+          <canvas id="canvasOutput"></canvas>
+        </div>
       </div>
     </div>
     <div id="seed-wrapper">
@@ -77,6 +86,7 @@
     <div id="processing-button-wrapper">
       <button id="processing-button">START PROCESSING</button>
     </div>
+    <div id="spinner"></div>
 
     <!-- <h2>Hello OpenCV.js</h2>
     <p id="status">OpenCV.js is loading...</p>
@@ -95,25 +105,15 @@
   </div>
 
   <script src="../static/js/cornerstoneReader.js"></script>
-  <script src="../static/js/inputs-handlers.js"></script>
-  <script async src="../static/deps/opencv.js" onload="onOpenCvReady();"></script>
+  <script src="../static/js/main.js"></script>
 
   <script type="text/javascript">
-    let imgElement = document.getElementById('imageSrc');
-    let inputElement = document.getElementById('fileInput');
-    inputElement.addEventListener('change', (e) => {
-      imgElement.src = URL.createObjectURL(e.target.files[0]);
-    }, false);
-    imgElement.onload = function () {
-      // let mat = cv.imread(imgElement);
-      let m = cv.matFromArray(2, 2, cv.CV_8UC1, [1, 2, 3, 4]);
-      console.log(m.data)
-      
-      // cv.imshow('canvasOutput',m );
-      mat.delete();
-    };
+
     function onOpenCvReady() {
-      document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+      // let m = cv.matFromArray(1, 8, cv.CV_8UC1, [255, 255, 255, 255, 255, 255, 255, 255]);
+      // console.log(m.data)
+
+      // cv.imshow('canvasOutput', m);
     }
   </script>
 </body>

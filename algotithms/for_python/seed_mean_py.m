@@ -1,4 +1,4 @@
-function [pylist] = seed_mean_py(image_name,reg_maxdist,dist_type,neigbr_number)
+function [pylist,J,I] = seed_mean_py(image_name,reg_maxdist,dist_type,neigbr_number)
 
 reg_maxdist = reg_maxdist / 100; % range must be between 0-1
 close all;
@@ -22,7 +22,8 @@ figure(1);
 imshow(I+J,[]);
 figure(3);
 imshow(J,[]);
-pylist = pylist_from_matlab_matrix(J);
+pylist = pylist_from_matlab_matrix(J+I);
+pylist = pylist(:);
 end
 
 

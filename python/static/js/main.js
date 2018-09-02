@@ -31,10 +31,16 @@ $(document).ready(function () {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
       })
-        .done(function (jsonRes) {
-          console.log(jsonRes)
-          const res = JSON.parse(jsonRes)
-          // console.log(res,res.result.split(" "))
+        .done(function (res) {
+          $('#spinner').html('<p>processing finished</p>')
+          console.log(res.result)
+          console.log([].concat.apply([], res.result))
+          let m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
+          console.log(m.data)
+
+          cv.imshow('canvasOutput', m);
+          // const res = JSON.parse(jsonRes)
+          // console.log(res)
         })
         .fail(function (err) {
           console.log(err)
@@ -55,10 +61,8 @@ $(document).ready(function () {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
       })
-        .done(function (jsonRes) {
-          console.log(jsonRes)
-          const res = JSON.parse(jsonRes)
-          // console.log(res,res.result.split(" "))
+        .done(function (res) {
+
         })
         .fail(function (err) {
           console.log(err)
@@ -69,8 +73,8 @@ $(document).ready(function () {
   $("#processing-button").click(() => {
     console.log('click')
     if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {
-    console.log('get')
-      
+      console.log('get')
+
       const clustersNumber = $("input[type=number][name='fuzzy']").val()
       const url = protocol + serverURL + '/fuzzy'
       const params = { fileName, clustersNumber }
@@ -82,10 +86,15 @@ $(document).ready(function () {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
       })
-        .done(function (jsonRes) {
-          console.log(jsonRes)
-          const res = JSON.parse(jsonRes)
-          // console.log(res,res.result.split(" "))
+        .done(function (res) {
+          $('#spinner').html('<p>processing finished</p>')
+          console.log(res.result)
+          let m = cv.matFromArray(1, 8, cv.CV_8UC1, res.result);
+          console.log(m.data)
+
+          cv.imshow('canvasOutput', m);
+          // const res = JSON.parse(jsonRes)
+          // console.log(res)
         })
         .fail(function (err) {
           console.log(err)

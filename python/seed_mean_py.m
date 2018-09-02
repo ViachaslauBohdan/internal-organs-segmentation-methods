@@ -22,7 +22,11 @@ figure(1);
 imshow(I+J,[]);
 figure(3);
 imshow(J,[]);
+m = ones(512,512);
+m(:,256:512) = 0;
 pylist = pylist_from_matlab_matrix(J);
+pylist{256}
+pylist = pylist(:);
 end
 
 

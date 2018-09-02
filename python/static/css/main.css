@@ -30,6 +30,7 @@ header span:last-child {
   background: #151a1f;
   height: 100%;
   padding-left: 15%;
+  padding-right: 15%;
   color: white;
 }
 
@@ -47,7 +48,7 @@ input[type="file"] {
 }
 
 #processing-button-wrapper>button {
-  background: #20a5d6;
+  background:rebeccapurple;
   border-radius: 5px;
   border: none;
   height: 29px;
@@ -75,7 +76,7 @@ input[type="number"] {
   width: 140px;
 }
 
-button {
+button:not(#processing-button) {
   background: #20a5d6;
   color: white;
 }

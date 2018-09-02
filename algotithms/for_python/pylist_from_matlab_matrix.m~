@@ -1,0 +1,10 @@
+function [pylist] = pylist_from_matlab_matrix(matrix)
+    matrix = im2uint8(matrix);
+%     pylist = mat2cell(matrix,matrix(1,:));
+      pylist = cell(1,size(matrix,1));
+
+%     for i= 1:size(matrix,1)
+%         pylist{i} = cell(matrix(i,:));
+%     end
+end
+

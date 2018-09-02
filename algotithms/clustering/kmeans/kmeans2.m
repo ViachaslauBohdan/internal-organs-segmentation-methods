@@ -1,4 +1,5 @@
 close all;
+addpath('utils')
 I = read_image(3);
 % k=7;
 num_of_clusters = input(['choose the number of clusters (e.x. 5):']);

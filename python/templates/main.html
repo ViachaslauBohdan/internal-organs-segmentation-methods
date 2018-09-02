@@ -46,7 +46,7 @@
         </div>
         <div>
           <span>Distance ratio:</span>
-          <input type="number" value="10" min="1" max="100">
+          <input type="number" name="seed" value="10" min="1" max="100">
         </div>
       </div>
     </div>
@@ -56,30 +56,66 @@
         <button id="kmeans-button">K-means</button>
       </div>
       <div id="kmeans-inputs-wrapper" style="margin-top:15px;">
-        <!-- <div style="margin-bottom:2px">
-          <span>Region standart:</span>
-          <input name="seed" value="mean" type="radio" checked>Mean
-          <input name="seed" value="median" type="radio">Median
-        </div>
-        <div style="margin-bottom:2px">
-          <span style="margin-right:9px;">Neighborhood:</span>
-          <input name="neighbours" value="4" type="radio" checked>4
-          <input name="neighbours" value="8" type="radio">8
-        </div> -->
         <div>
-          <span>Distance ratio:</span>
-          <input type="number" value="10" min="2" max="10">
+          <span>Number of clusters:</span>
+          <input type="number" name="kmeans" value="10" min="2" max="9">
+        </div>
+      </div>
+    </div>
+
+    <div id="fuzzy-wrapper">
+      <div>
+        <button id="fuzzy-button">Fuzzy c-means</button>
+      </div>
+      <div id="fuzzy-inputs-wrapper" style="margin-top:15px;">
+        <div>
+          <span>Number of clusters:</span>
+          <input type="number" name="fuzzy" value="10" min="2" max="9">
         </div>
       </div>
     </div>
     <div id="processing-button-wrapper">
       <button id="processing-button">START PROCESSING</button>
     </div>
+
+    <!-- <h2>Hello OpenCV.js</h2>
+    <p id="status">OpenCV.js is loading...</p>
+    <div>
+      <div class="inputoutput">
+        <img id="imageSrc" alt="No Image" />
+        <div class="caption">imageSrc
+          <input type="file" id="fileInput" name="file" />
+        </div>
+      </div>
+      <div class="inputoutput">
+        <canvas id="canvasOutput"></canvas>
+        <div class="caption">canvasOutput</div>
+      </div>
+    </div> -->
   </div>
 
   <script src="../static/js/cornerstoneReader.js"></script>
   <script src="../static/js/inputs-handlers.js"></script>
+  <script async src="../static/deps/opencv.js" onload="onOpenCvReady();"></script>
 
+  <script type="text/javascript">
+    let imgElement = document.getElementById('imageSrc');
+    let inputElement = document.getElementById('fileInput');
+    inputElement.addEventListener('change', (e) => {
+      imgElement.src = URL.createObjectURL(e.target.files[0]);
+    }, false);
+    imgElement.onload = function () {
+      // let mat = cv.imread(imgElement);
+      let m = cv.matFromArray(2, 2, cv.CV_8UC1, [1, 2, 3, 4]);
+      console.log(m.data)
+      
+      // cv.imshow('canvasOutput',m );
+      mat.delete();
+    };
+    function onOpenCvReady() {
+      document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+    }
+  </script>
 </body>
 
 </html>

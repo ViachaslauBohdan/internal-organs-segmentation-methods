@@ -63,15 +63,15 @@ input[type="number"] {
   min-width: 125px;
 }
 
-#seed-inputs-wrapper,#kmeans-inputs-wrapper {
+#seed-inputs-wrapper,#kmeans-inputs-wrapper,#fuzzy-inputs-wrapper {
   display: none;
 }
 
-#seed-wrapper,#kmeans-wrapper {
+#seed-wrapper,#kmeans-wrapper,#fuzzy-wrapper {
   margin-bottom: 20px;
 }
 
-#seed-button,#kmeans-button {
+#seed-button,#kmeans-button,#fuzzy-button {
   width: 140px;
 }
 

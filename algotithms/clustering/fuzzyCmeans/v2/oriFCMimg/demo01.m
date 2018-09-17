@@ -3,7 +3,7 @@ clear all;  close all;  clc;
 % img = double(imread('brain_n.tif'));
 I=read_image(3);
 img = double(I);
-clusterNum = 3;
+clusterNum = 5;
 [ Unow, center, now_obj_fcn ] = FCMforImage( img, clusterNum );
 
 figure;

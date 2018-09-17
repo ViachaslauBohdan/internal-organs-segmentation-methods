@@ -1,31 +1,12 @@
+function [pylist] = seed_mean_py(image_name,reg_maxdist,dist_type,neigbr_number,x_seeds,y_seeds)
+x_seeds
+reg_maxdist = reg_maxdist / 100; % range must be between 0-1
 close all;
-clc;
-clear all;
-% filename= '6';
-% 
-% % iminfo = dicominfo(filename)
-% I = dicomread(filename);
-% I = I + 2000;
-% I = rescale(I,0,1);
-% I = imadjust(I,[0.7 0.8],[0 1]);
+disp('1')
+I = read_image_double_py(image_name);
 
-addpath(genpath('../utils'))
-I = read_image_double(3);
-
-
-prompt = 'Enter number of neighbours (ex. 4 or 8) ';
-neigbr_number = input(prompt);
-
-
-
-if(isempty(neigbr_number))
-    neigbr_number = 4;
-end
-
-imshow(I,[]);
-[xi,yi] = ginput;
-xi = round(xi);
-yi = round(yi);
+xi = x_seeds;
+yi = y_seeds;
 
 number_of_seeds = size(xi,1);
 
@@ -38,7 +19,7 @@ imshow(J,[]);
 
 a = label2rgb(J);
 imshow(a);
-
+end
 
    
 function [output_img,b]=regiongrowing(input_img,neigbr_number,y,x,number_of_seeds,reg_maxdist)

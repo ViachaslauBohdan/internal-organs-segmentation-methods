@@ -1,5 +1,5 @@
 close all;
-addpath('utils')
+addpath(genpath('../utils'))
 I = read_image(3);
 % k=7;
 num_of_clusters = input(['choose the number of clusters (e.x. 5):']);
@@ -25,7 +25,7 @@ figure;
 imshow(bin_images_array{1,num});
 image_to_process = bin_images_array{1,num};
 
-addpath('morphology');
+addpath(genpath('../../morphology'));
 seg_image = main(image_to_process);
 
 render_seg_subplots(I,seg_image);

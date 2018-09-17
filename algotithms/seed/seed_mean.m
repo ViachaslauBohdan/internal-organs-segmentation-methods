@@ -1,4 +1,6 @@
 close all;
+
+addpath(genpath('../utils'))
 I = read_image_double(3);
 
 % iminfo = dicominfo(filename)
@@ -22,7 +24,7 @@ imshow(J,[]);
 
 function [output_img,b]=regiongrowing(input_img,neigbr_number,x,y,reg_maxdist)
 
-if(exist('reg_maxdist','var')==0), reg_maxdist=0.19; end
+if(exist('reg_maxdist','var')==0), reg_maxdist=0.1; end
 if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;
     y=round(y(1)); x=round(x(1)); end
 

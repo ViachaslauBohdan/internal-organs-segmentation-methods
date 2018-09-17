@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
     }
 
     // Setup the dnd listeners.
-    console.log($('#image'))
     const dropZone = document.getElementById('image');
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleFileSelect, false);
@@ -75,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
         const element = document.getElementById('image');
         const start = new Date().getTime();
         cornerstone.loadImage(imageId).then(function (image) {
-            console.log(image);
             const viewport = cornerstone.getDefaultViewportForImage(element, image);
             // document.getElementById('toggleModalityLUT').checked = (viewport.modalityLUT !== undefined);
             // document.getElementById('toggleVOILUT').checked = (viewport.voiLUT !== undefined);

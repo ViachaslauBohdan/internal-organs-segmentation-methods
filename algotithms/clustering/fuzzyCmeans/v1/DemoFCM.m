@@ -5,7 +5,7 @@ function [L,C,U,LUT,H,Imin,Imax] = DemoFCM
     im = read_image(2);
     
     % im=imread('cameraman.tif'); % sample image
-    [L,C,U,LUT,H,Imin,Imax]=FastFCMeans(im,3); % perform segmentation
+    [L,C,U,LUT,H,Imin,Imax]=FastFCMeans(im,4); % perform segmentation
 
     % Visualize the fuzzy membership functions
     figure('color','w')

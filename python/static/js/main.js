@@ -1,4 +1,6 @@
 var fileName
+var newListItem
+var coordsArray = []
 var buttons = [{
   id: '#seed-button',
   container: '#seed-inputs-wrapper',
@@ -21,13 +23,16 @@ $(document).ready(function () {
       const radioChecked = $("input[type=radio][name=seed]:checked").val()
       const neighboursNumber = $("input[type=radio][name='neighbours']:checked").val()
       const ratio = $("input[type=number][name='seed']").val()
-      const url = protocol + serverURL + '/seed'
-      const params = { fileName, ratio, neighboursNumber, distance: radioChecked };
+      const url = protocol + serverURL + '/seed' + `?fileName=${fileName}&ratio=${ratio}&neighboursNumber=${neighboursNumber}&distance=${radioChecked}`
+      // const params = { fileName, ratio, neighboursNumber, distance: radioChecked, coordsArray }
+      // console.log(coordsArray)
+      // array_of_objects = coordsArray
+      // console.log(array_of_objects)
 
       $.ajax({
         url: url,
-        type: "GET",
-        data: params,
+        type: "POST",
+        data: JSON.stringify({coordsArray}),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
       })
@@ -71,7 +76,6 @@ $(document).ready(function () {
   })
 
   $("#processing-button").click(() => {
-    console.log('click')
     if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {
       console.log('get')
 
@@ -118,6 +122,18 @@ $(document).ready(function () {
       }
       else deactivateRest(button.id, button.container)
     })
+  })
+
+  $('.cornerstone-canvas').click(function (e) {
+    if (!$('#seed-list-item').length) $('#no-seeds').remove()
+    coordsArray.push({
+      x: e.offsetX,
+      y: e.offsetY
+    })
+
+    newListItem = $(`<li id="seed-list-item">X: ${e.offsetX} Y: ${e.offsetY}</li>`)
+    $('#seed-list').append(newListItem)
+
   })
 
 })

@@ -43,19 +43,29 @@
         <button id="seed-button">Region growing</button>
       </div>
       <div id="seed-inputs-wrapper" style="margin-top:15px;">
-        <div style="margin-bottom:2px">
+        <div>
           <span>Region standart:</span>
           <input name="seed" value="mean" type="radio" checked>Mean
           <input name="seed" value="median" type="radio">Median
         </div>
-        <div style="margin-bottom:2px">
-          <span style="margin-right:9px;">Neighborhood:</span>
+        <div>
+          <span>Neighborhood:</span>
           <input name="neighbours" value="4" type="radio" checked>4
           <input name="neighbours" value="8" type="radio">8
         </div>
         <div>
           <span>Distance ratio:</span>
           <input type="number" name="seed" value="10" min="1" max="100">
+        </div>
+        <div id="seed-coords-wrapper">
+          <div style="display:inline-block">Choosen seed
+            <br> points coordinates:
+          </div>
+          <div style="display:inline-block">
+            <ol id="seed-list">
+              <div id="no-seeds">No seed points choosen</div>
+            </ul>
+          </div>
         </div>
       </div>
     </div>

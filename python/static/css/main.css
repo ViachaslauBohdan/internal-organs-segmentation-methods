@@ -48,7 +48,7 @@ input[type="file"] {
 }
 
 #processing-button-wrapper>button {
-  background:rebeccapurple;
+  background: rebeccapurple;
   border-radius: 5px;
   border: none;
   height: 29px;
@@ -64,19 +64,36 @@ input[type="number"] {
   min-width: 125px;
 }
 
-#seed-inputs-wrapper,#kmeans-inputs-wrapper,#fuzzy-inputs-wrapper {
+#seed-inputs-wrapper, #kmeans-inputs-wrapper, #fuzzy-inputs-wrapper {
   display: none;
 }
 
-#seed-wrapper,#kmeans-wrapper,#fuzzy-wrapper {
+#seed-wrapper, #kmeans-wrapper, #fuzzy-wrapper {
   margin-bottom: 20px;
 }
 
-#seed-button,#kmeans-button,#fuzzy-button {
+#seed-button, #kmeans-button, #fuzzy-button {
   width: 140px;
 }
 
 button:not(#processing-button) {
   background: #20a5d6;
   color: white;
+}
+
+#seed-inputs-wrapper>div {
+  margin-bottom: 7px;
+}
+
+#seed-coords-wrapper>div>ol {
+  /* padding: 0; */
+  margin: 0;
+}
+
+#seed-coords-wrapper div:first-child {
+  vertical-align: top;
+}
+
+.cornerstone-canvas:hover {
+  cursor: crosshair;
 }

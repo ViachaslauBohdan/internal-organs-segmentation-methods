@@ -19,17 +19,13 @@ err = true;
 i = 1;
 while(err == true)
     try
-        disp('try')
         I = dicomread(filename);
         err = false;
         catch e
-          disp('err')
           i = i +1;
           filename= [paths{i},num];
-          disp(num)
     end
 end
-disp(err)
 I = I + 2000;
 % I=im2uint8(I);
 I = rescale(I,0,1);

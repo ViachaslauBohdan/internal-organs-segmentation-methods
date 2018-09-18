@@ -9,7 +9,7 @@ clear all;
 % I = rescale(I,0,1);
 % I = imadjust(I,[0.7 0.8],[0 1]);
 
-addpath(genpath('../utils'))
+addpath(genpath('./utils'))
 I = read_image_double(3);
 
 
@@ -43,7 +43,7 @@ imshow(a);
    
 function [output_img,b]=regiongrowing(input_img,neigbr_number,y,x,number_of_seeds,reg_maxdist)
 
-if(exist('reg_maxdist','var')==0), reg_maxdist=0.05; end
+if(exist('reg_maxdist','var')==0), reg_maxdist=0.1; end
 % if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;
 %     y=round(y(1)); x=round(x(1)); end
 

@@ -47,8 +47,8 @@ def startSeedProcessing():
             ySeedsCoordinates.append(el['y'])
         print(type(el['x']),'xSeedsCoordinates')
 
-        xSeedsMatlabCoordinates = matlab.int16(xSeedsCoordinates)
-        ySeedsMatlabCoordinates = matlab.int16(ySeedsCoordinates)
+        xSeedsMatlabCoordinates = matlab.double(xSeedsCoordinates)
+        ySeedsMatlabCoordinates = matlab.double(ySeedsCoordinates)
         print(xSeedsMatlabCoordinates, '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         
 

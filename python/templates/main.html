@@ -11,6 +11,8 @@
   <script async src="../static/deps/opencv.js" onload="onOpenCvReady();"></script>
 
   <link rel="stylesheet" type="text/css" href="../static/css/main.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
 
 </head>
 
@@ -21,8 +23,17 @@
   </header>
 
   <div id="content">
-    <div id="file-input">
-      <input type="file" id="selectFile">
+    <div id="file-input" class="row">
+      <!-- <input type="file" id="selectFile"> -->
+      <div class="input-group mb-0 col-sm-3">
+        <!-- <div class="input-group-prepend">
+          <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
+        </div> -->
+        <div class="custom-file">
+          <input type="file" class="custom-file-input" id="selectFile" aria-describedby="inputGroupFileAddon01">
+          <label class="custom-file-label" for="selectFile">Choose file</label>
+        </div>
+      </div>
     </div>
     <div id="frames-wrapper" style="position:relative;height:512px">
       <div style="width:512px;height:512px;position:absolute;left:0;color: white;display:inline-block;border-style:solid;border-color:black;"
@@ -38,63 +49,65 @@
         </div>
       </div>
     </div>
-    <div id="seed-wrapper">
-      <div>
-        <button id="seed-button">Region growing</button>
-      </div>
-      <div id="seed-inputs-wrapper" style="margin-top:15px;">
+    <div id="buttons-wrapper" class="container-fluid" style="padding:0">
+      <div id="seed-wrapper">
         <div>
-          <span>Region standart:</span>
-          <input name="seed" value="mean" type="radio" checked>Mean
-          <input name="seed" value="median" type="radio">Median
+          <button id="seed-button">Region growing</button>
         </div>
-        <div>
-          <span>Neighborhood:</span>
-          <input name="neighbours" value="4" type="radio" checked>4
-          <input name="neighbours" value="8" type="radio">8
-        </div>
-        <div>
-          <span>Distance ratio:</span>
-          <input type="number" name="seed" value="10" min="1" max="100">
-        </div>
-        <div id="seed-coords-wrapper">
-          <div style="display:inline-block">Choosen seed
-            <br> points coordinates:
+        <div id="seed-inputs-wrapper" style="margin-top:15px;">
+          <div>
+            <span>Region standart:</span>
+            <input name="seed" value="mean" type="radio" checked>Mean
+            <input name="seed" value="median" type="radio">Median
           </div>
-          <div style="display:inline-block">
-            <ol id="seed-list">
-              <div id="no-seeds">No seed points choosen</div>
-            </ul>
+          <div>
+            <span>Neighborhood:</span>
+            <input name="neighbours" value="4" type="radio" checked>4
+            <input name="neighbours" value="8" type="radio">8
+          </div>
+          <div>
+            <span>Distance ratio:</span>
+            <input type="number" name="seed" value="10" min="1" max="100">
+          </div>
+          <div id="seed-coords-wrapper">
+            <div style="display:inline-block">Choosen seed
+              <br> points coordinates:
+            </div>
+            <div style="display:inline-block">
+              <ol id="seed-list">
+                <div id="no-seeds">No seed points choosen</div>
+                </ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div id="kmeans-wrapper">
-      <div>
-        <button id="kmeans-button">K-means</button>
-      </div>
-      <div id="kmeans-inputs-wrapper" style="margin-top:15px;">
+      <div id="kmeans-wrapper">
         <div>
-          <span>Number of clusters:</span>
-          <input type="number" name="kmeans" value="10" min="2" max="9">
+          <button id="kmeans-button">K-means</button>
+        </div>
+        <div id="kmeans-inputs-wrapper" style="margin-top:15px;">
+          <div>
+            <span>Number of clusters:</span>
+            <input type="number" name="kmeans" value="10" min="2" max="9">
+          </div>
         </div>
       </div>
-    </div>
 
-    <div id="fuzzy-wrapper">
-      <div>
-        <button id="fuzzy-button">Fuzzy c-means</button>
-      </div>
-      <div id="fuzzy-inputs-wrapper" style="margin-top:15px;">
+      <div id="fuzzy-wrapper">
         <div>
-          <span>Number of clusters:</span>
-          <input type="number" name="fuzzy" value="10" min="2" max="9">
+          <button id="fuzzy-button">Fuzzy c-means</button>
+        </div>
+        <div id="fuzzy-inputs-wrapper" style="margin-top:15px;">
+          <div>
+            <span>Number of clusters:</span>
+            <input type="number" name="fuzzy" value="10" min="2" max="9">
+          </div>
         </div>
       </div>
-    </div>
-    <div id="processing-button-wrapper">
-      <button id="processing-button">START PROCESSING</button>
+      <div id="processing-button-wrapper">
+        <button id="processing-button">START PROCESSING</button>
+      </div>
     </div>
     <div id="spinner"></div>
 

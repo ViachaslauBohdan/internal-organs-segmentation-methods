@@ -45,11 +45,9 @@ def startSeedProcessing():
         for el in payload['coordsArray']:
             xSeedsCoordinates.append(el['x'])
             ySeedsCoordinates.append(el['y'])
-        print(type(el['x']),'xSeedsCoordinates')
 
         xSeedsMatlabCoordinates = matlab.double(xSeedsCoordinates)
         ySeedsMatlabCoordinates = matlab.double(ySeedsCoordinates)
-        print(xSeedsMatlabCoordinates, '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++')
         
 
         output_img = matlab_engine.multiple_seeds_py(image_name, float(distance_ratio), distance_type, int(neigbr_number),
@@ -65,8 +63,8 @@ def startKmeansProcessing():
         clusters_number = normalize_unicode_string(
             request.args.get('clustersNumber'))
 
-        n = matlab_engine.kmeans_py(
-            image_name, float(clusters_number), nargout=0)
+        n = matlab_engine.kmeans_py(image_name, float(clusters_number), nargout=1)
+        print(n,'-----------------------------------------------------------------------')
         return jsonify({'result': 'n'})
 
 

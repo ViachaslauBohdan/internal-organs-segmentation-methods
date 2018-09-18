@@ -108,6 +108,10 @@ $(document).ready(function () {
 
   $('input[type="file"]').change(function (e) {
     fileName = e.target.files[0].name;
+    if($('input[type="file"]')) {
+      console.log('fnrej')
+      $('#buttons-wrapper').css('visibility','visible')
+    }
   })
 
   buttons.forEach(button => {

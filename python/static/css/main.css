@@ -39,8 +39,7 @@ input[type="file"] {
 }
 
 #file-input {
-  padding-top: 15px;
-  margin-bottom: 15px;
+padding: 20px 0 20px 0;
 }
 
 #processing-button-wrapper {
@@ -96,4 +95,8 @@ button:not(#processing-button) {
 
 .cornerstone-canvas:hover {
   cursor: crosshair;
+}
+
+#buttons-wrapper {
+  visibility: hidden;
 }

@@ -70,7 +70,6 @@
     for i = 1:number_of_seeds
         x = xi(i);
         y = yi(i);
-        reg_maxdist
         reg_mean = input_img(x,y);
         region_size = 1;
         pixdist = 0;

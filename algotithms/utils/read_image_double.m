@@ -1,4 +1,4 @@
-function J = read_image_double(num)
+function image = read_image_double(num)
 close all;
 clc;
 filename= ['/home/slawek/Pulpit/magisterka/test_images/images1/',int2str(num)];

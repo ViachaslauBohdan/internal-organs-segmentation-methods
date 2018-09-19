@@ -16,6 +16,7 @@ matlab_engine = matlab.engine.start_matlab()
 
 def normalize_unicode_string(data):
     return unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
+    
 
 
 @app.route("/")
@@ -52,6 +53,7 @@ def startSeedProcessing():
 
         output_img = matlab_engine.multiple_seeds_py(image_name, float(distance_ratio), distance_type, int(neigbr_number),
                                                      xSeedsMatlabCoordinates, ySeedsMatlabCoordinates, nargout=1)
+        print(output_img)
         return jsonify({'result': output_img})
 
 
@@ -63,9 +65,9 @@ def startKmeansProcessing():
         clusters_number = normalize_unicode_string(
             request.args.get('clustersNumber'))
 
-        n = matlab_engine.kmeans_py(image_name, float(clusters_number), nargout=1)
-        print(n,'-----------------------------------------------------------------------')
-        return jsonify({'result': 'n'})
+        clustered_bin_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
+        # print(bin_images_array,'-----------------------------------------------------------------------')
+        return jsonify({'clustered_bin_images': clustered_bin_images})
 
 
 @app.route("/matlab")

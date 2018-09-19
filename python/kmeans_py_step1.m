@@ -1,33 +1,24 @@
-function [num_of_clusters] = kmeans_py(num,num_of_clusters)
-
+function [clustered_images] = kmeans_py_step1(num,num_of_clusters)
     close all;
+    addpath('../')
     I = read_image_uint8_py(num);
-    % k=7;
-%     num_of_clusters = input(['choose the number of clusters (e.x. 5):']);
     bin_images_array = {1,num_of_clusters};
 
     [a,img,im_result,img_hist,hist_value,cluster,cluster_count,closest_cluster,...
         min_distance,imresult,clustersresult] = kmeansclustering(I,num_of_clusters);
     figure;
-
+    
+    clustered_images = cell(1,num_of_clusters);
+    
     for i = 1:num_of_clusters
         bin_images_array{1,i} = im_result == i;
-        subplot(floor(sqrt(num_of_clusters)),floor(sqrt(num_of_clusters))+2,i);
-        imshow(label2rgb(bin_images_array{1,i},@jet,'black'),[]);
-        title(strcat('cluster',{' '},int2str(i)));
+        clustered_images{1,i} = pylist_from_matlab_matrix(bin_images_array{1,i});
     end
+      clustered_images = clustered_images(:);
+%     pylist = pylist_from_matlab_matrix(bin_images_array{1,1});
+%     pylist = pylist(:);
+%     pylist = bin_images_array{1,5}
 
-%     clustered_img_number = input(['choose the number ','between 1 and ',int2str(num_of_clusters),' of a clustered image for further processing (e.x 3):'],'s');
-    clustered_img_number = '1';
-    num = str2num(clustered_img_number);
-    figure;
-    imshow(bin_images_array{1,num});
-    image_to_process = bin_images_array{1,num};
-
-%     addpath('morphology');
-%     seg_image = main(image_to_process);
-% 
-%     render_seg_subplots(I,seg_image);
 end
 
 

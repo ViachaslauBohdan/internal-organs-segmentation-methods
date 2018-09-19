@@ -67,7 +67,7 @@ $(document).ready(function () {
         dataType: "json",
       })
         .done(function (res) {
-
+          console.log(res)
         })
         .fail(function (err) {
           console.log(err)

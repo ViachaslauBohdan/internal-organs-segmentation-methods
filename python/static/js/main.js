@@ -24,28 +24,18 @@ $(document).ready(function () {
       const neighboursNumber = $("input[type=radio][name='neighbours']:checked").val()
       const ratio = $("input[type=number][name='seed']").val()
       const url = protocol + serverURL + '/seed' + `?fileName=${fileName}&ratio=${ratio}&neighboursNumber=${neighboursNumber}&distance=${radioChecked}`
-      // const params = { fileName, ratio, neighboursNumber, distance: radioChecked, coordsArray }
-      // console.log(coordsArray)
-      // array_of_objects = coordsArray
-      // console.log(array_of_objects)
 
       $.ajax({
         url: url,
         type: "POST",
-        data: JSON.stringify({coordsArray}),
+        data: JSON.stringify({ coordsArray }),
         contentType: "application/json; charset=utf-8",
         dataType: "json",
       })
         .done(function (res) {
           $('#spinner').html('<p>processing finished</p>')
-          console.log(res.result)
-          console.log([].concat.apply([], res.result))
-          let m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
-          console.log(m.data)
-
+          const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
           cv.imshow('canvasOutput', m);
-          // const res = JSON.parse(jsonRes)
-          // console.log(res)
         })
         .fail(function (err) {
           console.log(err)
@@ -67,7 +57,29 @@ $(document).ready(function () {
         dataType: "json",
       })
         .done(function (res) {
-          console.log(res)
+          res.arrayOfImgs.forEach((arrayImg, index) => {
+            const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], arrayImg))
+            let carouselElement
+            let carouselItemIndicator
+
+            if (index === 0) {
+              carouselElement = `<div class='carousel-item active'" + "><canvas id='canvas${index}'></canvas></div>`
+              carouselItemIndicator = `<li class='item${index+1} active'" + "></li>`
+            }
+            else {
+              carouselElement = `<div class='carousel-item'" + "><canvas id='canvas${index}'></canvas></div>`
+              carouselItemIndicator = `<li class='item${index+1}'" + "></li>`
+            }
+
+            $('.carousel-inner').append(carouselElement)
+            $('.carousel-indicators').append(carouselItemIndicator)
+            $(".carousel-item").css({ 'width': '100%', 'height': '600px' })
+
+            cv.imshow(`canvas${index}`, m);
+
+          })
+          activateCarousel(clustersNumber)
+          $('#dicomImgModal').modal()
         })
         .fail(function (err) {
           console.log(err)
@@ -108,9 +120,8 @@ $(document).ready(function () {
 
   $('input[type="file"]').change(function (e) {
     fileName = e.target.files[0].name;
-    if($('input[type="file"]')) {
-      console.log('fnrej')
-      $('#buttons-wrapper').css('visibility','visible')
+    if ($('input[type="file"]')) {
+      $('#buttons-wrapper').css('visibility', 'visible')
     }
   })
 
@@ -160,4 +171,25 @@ function deactivateRest(buttonId, containerId) {
   buttons.forEach(button => {
     if (button.id == buttonId) button.cliked = false
   })
+}
+
+function activateCarousel(clustersNumber) {
+  $("#dicom-images-carousel").carousel()
+
+  // Enable Carousel Indicators
+  for (let i = 1; i <= clustersNumber; i++) {
+    $(`.item${i}`).click(function () {
+      $("#dicom-images-carousel").carousel(i - 1)
+    })
+  }
+
+  // Enable Carousel Controls
+  $(".carousel-control-prev").click(function () {
+    $("#dicom-images-carousel").carousel("prev")
+  })
+  $(".carousel-control-next").click(function () {
+    $("#dicom-images-carousel").carousel("next")
+  })
+
+  $('.carousel').carousel('pause');
 }

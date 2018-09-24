@@ -67,7 +67,7 @@ def startKmeansProcessing():
 
         clustered_bin_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
         # print(bin_images_array,'-----------------------------------------------------------------------')
-        return jsonify({'clustered_bin_images': clustered_bin_images})
+        return jsonify({'arrayOfImgs': clustered_bin_images})
 
 
 @app.route("/matlab")

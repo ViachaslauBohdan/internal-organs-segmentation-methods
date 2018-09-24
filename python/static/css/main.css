@@ -39,7 +39,7 @@ input[type="file"] {
 }
 
 #file-input {
-padding: 20px 0 20px 0;
+  padding: 20px 0 20px 0;
 }
 
 #processing-button-wrapper {
@@ -99,4 +99,12 @@ button:not(#processing-button) {
 
 #buttons-wrapper {
   visibility: hidden;
+}
+
+/* .carousel-caption {
+  position: static;
+} */
+
+.modal-content {
+  background-color: grey !important;
 }

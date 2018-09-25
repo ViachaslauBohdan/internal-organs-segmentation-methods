@@ -108,3 +108,14 @@ button:not(#processing-button) {
 .modal-content {
   background-color: grey !important;
 }
+
+.filters-list>li {
+  border-radius: 4px;
+  padding: 5px;
+  background-color: rgb(68, 66, 66);
+  margin-bottom: 5px;
+}
+
+.filters-list>li:hover {
+  cursor: pointer;
+}

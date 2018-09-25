@@ -13,6 +13,8 @@ app = Flask(__name__)
 CORS(app)
 matlab_engine = matlab.engine.start_matlab()
 
+kmeans_arrays = []
+
 
 def normalize_unicode_string(data):
     return unicodedata.normalize('NFKD', data).encode('ascii', 'ignore')
@@ -57,17 +59,29 @@ def startSeedProcessing():
         return jsonify({'result': output_img})
 
 
-@app.route("/kmeans", methods=['GET'])
-def startKmeansProcessing():
+@app.route("/kmeans/step1", methods=['GET'])
+def startKmeansStep1():
     if request.method == 'GET':
-        # payload  = request.get_json()
         image_name = normalize_unicode_string(request.args.get('fileName'))
         clusters_number = normalize_unicode_string(
             request.args.get('clustersNumber'))
 
         clustered_bin_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
-        # print(bin_images_array,'-----------------------------------------------------------------------')
+        global kmeans_arrays
+        kmeans_arrays = clustered_bin_images
         return jsonify({'arrayOfImgs': clustered_bin_images})
+
+@app.route("/kmeans/step2", methods=['GET'])
+def startKmeansStep2():
+    import matlab    
+    filter_number = normalize_unicode_string(request.args.get('filterNumber'))
+    image_number = normalize_unicode_string(request.args.get('imgNumber'))    
+    print(filter_number,image_number)
+
+    img_to_process = matlab_engine.kmeans_py_step2(filter_number,matlab.logical(kmeans_arrays[int(image_number)-1]),nargout=1)  
+
+    return jsonify({'img_to_process': img_to_process})
+
 
 
 @app.route("/matlab")

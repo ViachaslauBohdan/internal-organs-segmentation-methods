@@ -1,6 +1,11 @@
 var fileName
 var newListItem
 var coordsArray = []
+var reconstructionCoords = []
+var kmeansClusteredImages
+var choosenImageNumber
+const protocol = location.protocol + '//'
+const serverURL = location.host
 var buttons = [{
   id: '#seed-button',
   container: '#seed-inputs-wrapper',
@@ -46,29 +51,32 @@ $(document).ready(function () {
   $("#processing-button").click(() => {
     if ($('#kmeans-button').css('background-color') == 'rgb(33, 165, 34)') {
       const clustersNumber = $("input[type=number][name='kmeans']").val()
-      const url = protocol + serverURL + '/kmeans'
       const params = { fileName, clustersNumber }
 
-      $.ajax({
-        url: url,
-        type: "GET",
-        data: params,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-      })
+      sendGetRequest('/kmeans/step1', params)
         .done(function (res) {
+          kmeansClusteredImages = res.arrayOfImgs
+
           res.arrayOfImgs.forEach((arrayImg, index) => {
             const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], arrayImg))
             let carouselElement
             let carouselItemIndicator
 
             if (index === 0) {
-              carouselElement = `<div class='carousel-item active'" + "><canvas id='canvas${index}'></canvas></div>`
-              carouselItemIndicator = `<li class='item${index+1} active'" + "></li>`
+              carouselElement = `
+              <div class='carousel-item active'" + ">
+                      <div class="slide-name" style='color:white;font-size:20px'>Cluster number: ${index + 1}</div> 
+                      <canvas id='canvas${index}'></canvas>
+              </div>`
+              carouselItemIndicator = `<li class='item${index + 1} active'" + "></li>`
             }
             else {
-              carouselElement = `<div class='carousel-item'" + "><canvas id='canvas${index}'></canvas></div>`
-              carouselItemIndicator = `<li class='item${index+1}'" + "></li>`
+              carouselElement = `
+              <div class='carousel-item'" + ">
+                      <div class="slide-name" style='color:white;font-size:20px'>Cluster number: ${index + 1}</div>
+                      <canvas id='canvas${index}'></canvas>
+              </div>`
+              carouselItemIndicator = `<li class='item${index + 1}'" + "></li>`
             }
 
             $('.carousel-inner').append(carouselElement)
@@ -87,21 +95,81 @@ $(document).ready(function () {
     }
   })
 
+  $(".carousel-submit-button").click(() => {
+
+    if ($('.carousel-input').attr('name') === 'step2') {
+      const filterNumber = $('.carousel-input').val()
+
+      sendGetRequest('/kmeans/step2', { filterNumber, imgNumber: choosenImageNumber })
+        .done(function (res) {
+          console.log(res)
+        })
+        .fail(function (err) {
+          console.log(err)
+        })
+    }
+    else choosenImageNumber = $('.carousel-input').val()
+
+    const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], kmeansClusteredImages[choosenImageNumber - 1]))
+    let carouselElement
+    let carouselItemIndicator
+
+    $('.modal-title').text('Step 2: select further processing filter number')
+    $('.processing-filters').css({ 'display': 'inherit', 'color': 'white' })
+    $('.carousel-input').attr('name', 'step2') //step detector
+
+    carouselElement = `
+      <div class='carousel-item active'" + ">
+              <div class="slide-name" style='color:white;font-size:20px'>Choosen image for further processing</div> 
+              <canvas id='canvas1'></canvas>
+      </div>`
+    carouselItemIndicator = `<li class='item1 active'" + "></li>`
+
+    $('.carousel-inner').html(carouselElement)
+    $('.carousel-indicators').html(carouselItemIndicator)
+    $(".carousel-item").css({ 'width': '100%', 'height': '600px' })
+
+    cv.imshow(`canvas1`, m);
+    activateCarousel(1)
+    $('#dicomImgModal').modal()
+
+
+
+  })
+
+  $('.filters-list li').click(function () {
+    $(this).css({ 'background-color': '#d09c00' })
+    for (let i = 0; i < 5; i++) {
+      if (($(this).index() !== i) && ($(`.filters-list li:nth-child(${i + 1})`).css('background-color')) !== 'rgb(68, 66, 66)') {
+        $(`.filters-list li:nth-child(${i + 1})`).css({ 'background-color': 'rgb(68, 66, 66)' })
+      }
+    }
+
+    switch ($(this).index()) {
+      case 0:
+        $('.reconstruction-pts').removeClass('d-none')
+        $('.reconstruction-pts').addClass('d-flex')
+        $('#canvas1').css({ cursor: 'crosshair' })
+        break
+    }
+  })
+
+  $('.carousel-inner').delegate('#canvas1', 'click', function (event) {
+    console.log('canvas1')
+    $('.reconstruction-no-points').remove()
+    reconstructionCoords.push({
+      x: event.offsetX,
+      y: event.offsetY
+    })
+    $('#reconstruction-points-container').append(`<li>x: ${event.offsetX} y: ${event.offsetY}</li>`)
+  })
+
   $("#processing-button").click(() => {
     if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {
-      console.log('get')
-
       const clustersNumber = $("input[type=number][name='fuzzy']").val()
-      const url = protocol + serverURL + '/fuzzy'
       const params = { fileName, clustersNumber }
 
-      $.ajax({
-        url: url,
-        type: "GET",
-        data: params,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-      })
+      sendGetRequest('/fuzzy', params)
         .done(function (res) {
           $('#spinner').html('<p>processing finished</p>')
           console.log(res.result)
@@ -117,6 +185,8 @@ $(document).ready(function () {
         })
     }
   })
+
+
 
   $('input[type="file"]').change(function (e) {
     fileName = e.target.files[0].name;
@@ -150,6 +220,8 @@ $(document).ready(function () {
     $('#seed-list').append(newListItem)
 
   })
+
+
 
 })
 
@@ -191,5 +263,19 @@ function activateCarousel(clustersNumber) {
     $("#dicom-images-carousel").carousel("next")
   })
 
-  $('.carousel').carousel('pause');
+}
+
+function sendGetRequest(suffix, params) {
+  const url = generateURL(suffix)
+  return $.ajax({
+    url: url,
+    type: "GET",
+    data: params,
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+  })
+}
+
+function generateURL(suffix) {
+  return protocol + serverURL + suffix
 }

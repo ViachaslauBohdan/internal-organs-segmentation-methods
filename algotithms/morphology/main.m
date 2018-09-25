@@ -1,7 +1,6 @@
 function [seg_image] = main(image_to_process)
 max(image_to_process(:))
-    %MAIN Summary of this function goes here
-    %   Detailed explanation goes here
+
     user_response = '';
     addpath('morphology');
     while ~strcmp(user_response,'5')

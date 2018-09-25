@@ -1,8 +1,3 @@
-const protocol = window.location.protocol + '//'
-const serverURL = window.location.host
-const imagesURL = '/images'
-
-
 document.addEventListener("DOMContentLoaded", function (event) {
     console.log("DOM fully loaded and parsed");
 

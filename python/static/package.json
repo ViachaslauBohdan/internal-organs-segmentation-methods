@@ -1,0 +1,24 @@
+{
+  "name": "static",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "watch": {
+    "build": "js/*.js"
+  },
+  "scripts": {
+    "build": "sudo npx webpack --config webpack.config.js",
+    "watch": "npm-watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.1"
+  },
+  "dependencies": {
+    "babel-loader": "^8.0.3",
+    "lodash": "^4.17.11",
+    "npm-watch": "^0.4.0"
+  }
+}

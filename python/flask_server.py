@@ -36,7 +36,7 @@ def startSeedProcessing():
     import matlab
     print('SEED REQUEST')
     if request.method == 'POST':
-        payload = request.get_json()
+        json = request.get_json()
         xSeedsCoordinates = []
         ySeedsCoordinates = []
         image_name = normalize_unicode_string(request.args.get('fileName'))
@@ -45,7 +45,7 @@ def startSeedProcessing():
         neigbr_number = normalize_unicode_string(
             request.args.get('neighboursNumber'))
 
-        for el in payload['coordsArray']:
+        for el in json['payload']:
             xSeedsCoordinates.append(el['x'])
             ySeedsCoordinates.append(el['y'])
 
@@ -78,7 +78,7 @@ def startKmeansStep2():
     image_number = normalize_unicode_string(request.args.get('imgNumber'))    
     print(filter_number,image_number)
 
-    img_to_process = matlab_engine.kmeans_py_step2(filter_number,matlab.logical(kmeans_arrays[int(image_number)-1]),nargout=1)  
+    img_to_process = matlab_engine.kmeans_py_step2(filter_number,matlab.logical(kmeans_arrays[int(image_number)]),nargout=1)  
 
     return jsonify({'img_to_process': img_to_process})
 

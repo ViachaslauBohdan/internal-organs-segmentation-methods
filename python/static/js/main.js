@@ -6,6 +6,9 @@ var kmeansClusteredImages
 var choosenImageNumber
 const protocol = location.protocol + '//'
 const serverURL = location.host
+
+import {ajaxFunctions} from './ajax'
+
 var buttons = [{
   id: '#seed-button',
   container: '#seed-inputs-wrapper',
@@ -23,20 +26,17 @@ var buttons = [{
 }]
 
 $(document).ready(function () {
+  console.log(ajaxFunctions.generateURL('111'))
   $("#processing-button").click(() => {
     if ($('#seed-button').css('background-color') == 'rgb(33, 165, 34)') {
       const radioChecked = $("input[type=radio][name=seed]:checked").val()
       const neighboursNumber = $("input[type=radio][name='neighbours']:checked").val()
       const ratio = $("input[type=number][name='seed']").val()
-      const url = protocol + serverURL + '/seed' + `?fileName=${fileName}&ratio=${ratio}&neighboursNumber=${neighboursNumber}&distance=${radioChecked}`
+      // const url = protocol + serverURL + '/seed' + `?fileName=${fileName}&ratio=${ratio}&neighboursNumber=${neighboursNumber}&distance=${radioChecked}`
+      const suffix = '/seed' + `?fileName=${fileName}&ratio=${ratio}&neighboursNumber=${neighboursNumber}&distance=${radioChecked}`
 
-      $.ajax({
-        url: url,
-        type: "POST",
-        data: JSON.stringify({ coordsArray }),
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-      })
+
+      sendPostRequest(suffix, coordsArray)
         .done(function (res) {
           $('#spinner').html('<p>processing finished</p>')
           const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
@@ -98,9 +98,11 @@ $(document).ready(function () {
   $(".carousel-submit-button").click(() => {
 
     if ($('.carousel-input').attr('name') === 'step2') {
-      const filterNumber = $('.carousel-input').val()
+      const filterNumber = $(".filters-list").find("li").filter(function () {
+        return $(this).css("background-color") === "rgb(208, 156, 0)";
+      }).index()
 
-      sendGetRequest('/kmeans/step2', { filterNumber, imgNumber: choosenImageNumber })
+      sendGetRequest('/kmeans/step2', { filterNumber: filterNumber + 1, imgNumber: choosenImageNumber - 1, reconstructionCoords })
         .done(function (res) {
           console.log(res)
         })
@@ -108,30 +110,32 @@ $(document).ready(function () {
           console.log(err)
         })
     }
-    else choosenImageNumber = $('.carousel-input').val()
+    else {
+      choosenImageNumber = $('.carousel-input').val()
 
-    const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], kmeansClusteredImages[choosenImageNumber - 1]))
-    let carouselElement
-    let carouselItemIndicator
+      const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], kmeansClusteredImages[choosenImageNumber - 1]))
+      let carouselElement
+      let carouselItemIndicator
 
-    $('.modal-title').text('Step 2: select further processing filter number')
-    $('.processing-filters').css({ 'display': 'inherit', 'color': 'white' })
-    $('.carousel-input').attr('name', 'step2') //step detector
+      $('.modal-title').text('Step 2: select further processing filter number')
+      $('.processing-filters').css({ 'display': 'inherit', 'color': 'white' })
+      $('.carousel-input').attr('name', 'step2') //step detector
 
-    carouselElement = `
+      carouselElement = `
       <div class='carousel-item active'" + ">
               <div class="slide-name" style='color:white;font-size:20px'>Choosen image for further processing</div> 
               <canvas id='canvas1'></canvas>
       </div>`
-    carouselItemIndicator = `<li class='item1 active'" + "></li>`
+      carouselItemIndicator = `<li class='item1 active'" + "></li>`
 
-    $('.carousel-inner').html(carouselElement)
-    $('.carousel-indicators').html(carouselItemIndicator)
-    $(".carousel-item").css({ 'width': '100%', 'height': '600px' })
+      $('.carousel-inner').html(carouselElement)
+      $('.carousel-indicators').html(carouselItemIndicator)
+      $(".carousel-item").css({ 'width': '100%', 'height': '600px' })
 
-    cv.imshow(`canvas1`, m);
-    activateCarousel(1)
-    $('#dicomImgModal').modal()
+      cv.imshow(`canvas1`, m);
+      activateCarousel(1)
+      $('#dicomImgModal').modal()
+    }
 
 
 
@@ -265,17 +269,3 @@ function activateCarousel(clustersNumber) {
 
 }
 
-function sendGetRequest(suffix, params) {
-  const url = generateURL(suffix)
-  return $.ajax({
-    url: url,
-    type: "GET",
-    data: params,
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-  })
-}
-
-function generateURL(suffix) {
-  return protocol + serverURL + suffix
-}

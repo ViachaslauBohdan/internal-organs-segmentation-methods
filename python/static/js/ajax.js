@@ -1,7 +1,7 @@
 
-var ajaxFunctions = {
+var ajax = {
     sendGetRequest: function sendGetRequest(suffix, params) {
-        const url = generateURL(suffix)
+        const url = this.generateURL(suffix)
         return $.ajax({
             url: url,
             type: "GET",
@@ -12,7 +12,7 @@ var ajaxFunctions = {
     },
 
     sendPostRequest: function sendPostRequest(suffix, payload) {
-        const url = generateURL(suffix)
+        const url = this.generateURL(suffix)
 
         return $.ajax({
             url: url,
@@ -25,11 +25,11 @@ var ajaxFunctions = {
     },
 
     generateURL: function generateURL(suffix) {
-        return location.protocol + '//' + location.host + '/' + suffix
+        return location.protocol + '//' + location.host + suffix
     }
 
 }
 
-export { ajaxFunctions }
+export { ajax }
 
 

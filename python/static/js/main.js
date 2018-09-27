@@ -4,29 +4,15 @@ var coordsArray = []
 var reconstructionCoords = []
 var kmeansClusteredImages
 var choosenImageNumber
-const protocol = location.protocol + '//'
-const serverURL = location.host
 
-import {ajaxFunctions} from './ajax'
+import { ajax } from './ajax'
+import mainButtons from './main-buttons-activator'
 
-var buttons = [{
-  id: '#seed-button',
-  container: '#seed-inputs-wrapper',
-  cliked: false,
-},
-{
-  id: '#kmeans-button',
-  container: '#kmeans-inputs-wrapper',
-  cliked: false
-},
-{
-  id: '#fuzzy-button',
-  container: '#fuzzy-inputs-wrapper',
-  cliked: false
-}]
+
 
 $(document).ready(function () {
-  console.log(ajaxFunctions.generateURL('111'))
+  mainButtons.init()
+
   $("#processing-button").click(() => {
     if ($('#seed-button').css('background-color') == 'rgb(33, 165, 34)') {
       const radioChecked = $("input[type=radio][name=seed]:checked").val()
@@ -36,7 +22,7 @@ $(document).ready(function () {
       const suffix = '/seed' + `?fileName=${fileName}&ratio=${ratio}&neighboursNumber=${neighboursNumber}&distance=${radioChecked}`
 
 
-      sendPostRequest(suffix, coordsArray)
+      ajax.sendPostRequest(suffix, coordsArray)
         .done(function (res) {
           $('#spinner').html('<p>processing finished</p>')
           const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
@@ -53,7 +39,7 @@ $(document).ready(function () {
       const clustersNumber = $("input[type=number][name='kmeans']").val()
       const params = { fileName, clustersNumber }
 
-      sendGetRequest('/kmeans/step1', params)
+      ajax.sendGetRequest('/kmeans/step1', params)
         .done(function (res) {
           kmeansClusteredImages = res.arrayOfImgs
 
@@ -102,7 +88,7 @@ $(document).ready(function () {
         return $(this).css("background-color") === "rgb(208, 156, 0)";
       }).index()
 
-      sendGetRequest('/kmeans/step2', { filterNumber: filterNumber + 1, imgNumber: choosenImageNumber - 1, reconstructionCoords })
+      ajax.sendGetRequest('/kmeans/step2', { filterNumber: filterNumber + 1, imgNumber: choosenImageNumber - 1, reconstructionCoords })
         .done(function (res) {
           console.log(res)
         })
@@ -173,7 +159,7 @@ $(document).ready(function () {
       const clustersNumber = $("input[type=number][name='fuzzy']").val()
       const params = { fileName, clustersNumber }
 
-      sendGetRequest('/fuzzy', params)
+      ajax.sendGetRequest('/fuzzy', params)
         .done(function (res) {
           $('#spinner').html('<p>processing finished</p>')
           console.log(res.result)
@@ -199,19 +185,6 @@ $(document).ready(function () {
     }
   })
 
-  buttons.forEach(button => {
-    $(button.id).click(function () {
-      if (!button.cliked) {
-        activateButton(button.id, button.container)
-
-        const buttonToDeactivate = buttons.find((b) => {
-          return (b.cliked == true) && (b.id != button.id)
-        })
-        if (buttonToDeactivate) deactivateRest(buttonToDeactivate.id, buttonToDeactivate.container)
-      }
-      else deactivateRest(button.id, button.container)
-    })
-  })
 
   $('.cornerstone-canvas').click(function (e) {
     if (!$('#seed-list-item').length) $('#no-seeds').remove()
@@ -228,26 +201,6 @@ $(document).ready(function () {
 
 
 })
-
-function activateButton(buttonId, containerId) {
-  $(buttonId).css({ 'background-color': '#21a522' })
-  $(containerId).css({
-    'display': 'inherit'
-  })
-  buttons.forEach(button => {
-    if (button.id == buttonId) button.cliked = true
-  })
-}
-
-function deactivateRest(buttonId, containerId) {
-  $(buttonId).css({ 'background-color': '#20a5d6' })
-  $(containerId).css({
-    'display': 'none'
-  })
-  buttons.forEach(button => {
-    if (button.id == buttonId) button.cliked = false
-  })
-}
 
 function activateCarousel(clustersNumber) {
   $("#dicom-images-carousel").carousel()

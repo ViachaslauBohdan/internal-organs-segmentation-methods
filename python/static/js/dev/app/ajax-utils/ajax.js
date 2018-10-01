@@ -1,6 +1,8 @@
 
-var ajax = {
+var ajax =  {
     sendGetRequest: function sendGetRequest(suffix, params) {
+        console.log('send get request')      
+          
         const url = this.generateURL(suffix)
         return $.ajax({
             url: url,
@@ -10,10 +12,11 @@ var ajax = {
             dataType: "json",
         })
     },
-
+     
     sendPostRequest: function sendPostRequest(suffix, payload) {
-        const url = this.generateURL(suffix)
+        console.log('send post   request')
 
+        const url = this.generateURL(suffix)
         return $.ajax({
             url: url,
             type: "POST",

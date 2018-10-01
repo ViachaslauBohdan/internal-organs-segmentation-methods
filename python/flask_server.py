@@ -66,19 +66,28 @@ def startKmeansStep1():
         clusters_number = normalize_unicode_string(
             request.args.get('clustersNumber'))
 
-        clustered_bin_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
+        clustered_uint8_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
         global kmeans_arrays
-        kmeans_arrays = clustered_bin_images
-        return jsonify({'arrayOfImgs': clustered_bin_images})
+        kmeans_arrays = clustered_uint8_images
+        return jsonify({'arrayOfImgs': kmeans_arrays })
 
-@app.route("/kmeans/step2", methods=['GET'])
+@app.route("/kmeans/step2", methods=['GET','POST'])
 def startKmeansStep2():
     import matlab    
-    filter_number = normalize_unicode_string(request.args.get('filterNumber'))
-    image_number = normalize_unicode_string(request.args.get('imgNumber'))    
-    print(filter_number,image_number)
+    json = request.get_json()    
+    filter_number = json['payload']['filterNumber']
+    image_index = json['payload']['imgNumber']
+    xReconstructionCoords = []
+    yReconstructionCoords = []
+    for el in json['payload']['reconstructionCoords']:
+        xReconstructionCoords.append(el['x'])
+        yReconstructionCoords.append(el['y'])
 
-    img_to_process = matlab_engine.kmeans_py_step2(filter_number,matlab.logical(kmeans_arrays[int(image_number)]),nargout=1)  
+    xReconstructionCoords = matlab.double(xReconstructionCoords)
+    yReconstructionCoords = matlab.double(yReconstructionCoords)
+    print('KMEANS STEP2: ',filter_number,xReconstructionCoords,yReconstructionCoords)
+
+    img_to_process = matlab_engine.kmeans_py_step2(str(filter_number),matlab.logical(kmeans_arrays[int(image_index)]),xReconstructionCoords,yReconstructionCoords,nargout=1)  
 
     return jsonify({'img_to_process': img_to_process})
 

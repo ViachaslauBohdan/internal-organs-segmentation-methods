@@ -1,23 +1,22 @@
 var fileName
 var newListItem
 var coordsArray = []
-var reconstructionCoords = []
-// var kmeansClusteredImages
-var choosenImageNumber
 
 import { ajax } from './ajax-utils/ajax'
 import initMainButtons from './main-buttons/main-buttons-activator'
 import carousel from './carousel/carousel'
 import loadFileFromPC from './files-loader/load-file-from-pc'
 
-
+ 
 
 
 $(document).ready(function () {
   loadFileFromPC.activateClickEventListener()
-  $("#processing-button").click(() => {
+  $("#processing-button").click(() => { 
     if ($('#seed-button').css('background-color') == 'rgb(33, 165, 34)') {
+      console.log('START SEED PROCESSING')      
       const radioChecked = $("input[type=radio][name=seed]:checked").val()
+      const fileName = loadFileFromPC.getLoadedFileName()
       const neighboursNumber = $("input[type=radio][name='neighbours']:checked").val()
       const ratio = $("input[type=number][name='seed']").val()
       const suffix = '/seed' + `?fileName=${fileName}&ratio=${ratio}&neighboursNumber=${neighboursNumber}&distance=${radioChecked}`
@@ -35,22 +34,6 @@ $(document).ready(function () {
     }
   })
 
-  $('.filters-list li').click(function () {
-    $(this).css({ 'background-color': '#d09c00' })
-    for (let i = 0; i < 5; i++) {
-      if (($(this).index() !== i) && ($(`.filters-list li:nth-child(${i + 1})`).css('background-color')) !== 'rgb(68, 66, 66)') {
-        $(`.filters-list li:nth-child(${i + 1})`).css({ 'background-color': 'rgb(68, 66, 66)' })
-      }
-    }
-
-    switch ($(this).index()) {
-      case 0:
-        $('.reconstruction-pts').removeClass('d-none')
-        $('.reconstruction-pts').addClass('d-flex')
-        $('#canvas1').css({ cursor: 'crosshair' })
-        break
-    }
-  })
 
   $("#processing-button").click(() => {
     if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {

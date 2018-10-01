@@ -25,6 +25,22 @@ var carousel = {
                     carousel.generateEmptyCarousel(params, clustersNumber)
                 }
             })
+            $('.filters-list li').click(function () {
+                $(this).css({ 'background-color': '#d09c00' })
+                for (let i = 0; i < 5; i++) {
+                    if (($(this).index() !== i) && ($(`.filters-list li:nth-child(${i + 1})`).css('background-color')) !== 'rgb(68, 66, 66)') {
+                        $(`.filters-list li:nth-child(${i + 1})`).css({ 'background-color': 'rgb(68, 66, 66)' })
+                    }
+                }
+
+                switch ($(this).index()) {
+                    case 0:
+                        $('.reconstruction-pts').removeClass('d-none')
+                        $('.reconstruction-pts').addClass('d-flex')
+                        $('#canvas1').css({ cursor: 'crosshair' })
+                        break
+                }
+            })
         })
     },
     generateEmptyCarousel: function (params, clustersNumber) {
@@ -60,15 +76,15 @@ var carousel = {
             })
             .fail(function (err) {
                 console.log(err)
-            })
+            })  
     },
     carouselSubmit: function () {
         var superThis = this
-        console.log(this.kmeansClusteredImages)
         if ($('.carousel-input').attr('name') === 'step2') {
+            console.log('KMEANS STEP3')
             const filterNumber = this.appendColours()
 
-            ajax.sendGetRequest('/kmeans/step2', {
+            ajax.sendPostRequest('/kmeans/step2', {
                 filterNumber: filterNumber + 1, imgNumber: superThis.choosenImageNumber - 1, reconstructionCoords: superThis.reconstructionCoords
             })
                 .done(function (res) {
@@ -79,7 +95,7 @@ var carousel = {
                 })
         }
         else if ($('.carousel-input').attr('name') === 'step1') {
-            console.log('STEP2')
+            console.log('KMEANS STEP2')
             superThis.choosenImageNumber = $('.carousel-input').val()
 
             const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], superThis.kmeansClusteredImages[superThis.choosenImageNumber - 1]))

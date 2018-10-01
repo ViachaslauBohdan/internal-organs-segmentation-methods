@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "watch": {
-    "build": "js/*.js"
+    "build": {
+      "patterns": ["app"],
+      "extensions": "js"
+    }
   },
   "scripts": {
     "build": "sudo npx webpack --config webpack.config.js",

@@ -77,17 +77,25 @@ def startKmeansStep2():
     json = request.get_json()    
     filter_number = json['payload']['filterNumber']
     image_index = json['payload']['imgNumber']
+    
     xReconstructionCoords = []
     yReconstructionCoords = []
-    for el in json['payload']['reconstructionCoords']:
-        xReconstructionCoords.append(el['x'])
-        yReconstructionCoords.append(el['y'])
+    se_size = 5
 
-    xReconstructionCoords = matlab.double(xReconstructionCoords)
-    yReconstructionCoords = matlab.double(yReconstructionCoords)
-    print('KMEANS STEP2: ',filter_number,xReconstructionCoords,yReconstructionCoords)
+    if hasattr(json['payload'], 'reconstructionCoords'):
 
-    img_to_process = matlab_engine.kmeans_py_step2(str(filter_number),matlab.logical(kmeans_arrays[int(image_index)]),xReconstructionCoords,yReconstructionCoords,nargout=1)  
+        for el in json['reconstructionCoords']:
+            xReconstructionCoords.append(el['x'])
+            yReconstructionCoords.append(el['y'])
+
+        xReconstructionCoords = matlab.double(xReconstructionCoords)
+        yReconstructionCoords = matlab.double(yReconstructionCoords)
+        print('KMEANS STEP2: ',filter_number,xReconstructionCoords,yReconstructionCoords)
+    elif hasattr(json['payload'], 'seSize'):
+        se_size = json['seSize']
+ 
+
+    img_to_process = matlab_engine.kmeans_py_step2(str(filter_number),matlab.logical(kmeans_arrays[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=1)  
 
     return jsonify({'img_to_process': img_to_process})
 

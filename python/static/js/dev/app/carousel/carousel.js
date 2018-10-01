@@ -35,9 +35,19 @@ var carousel = {
                 superThis.clickedFilterIndex = $(this).index()
                 switch ($(this).index()) {
                     case 0:
+                        superThis.modifyInput('make hidden')
                         $('.reconstruction-pts').removeClass('d-none')
                         $('.reconstruction-pts').addClass('d-flex')
                         $('#canvas1').css({ cursor: 'crosshair' })
+                        break
+                    case 2:
+                        $('.carousel-input').val(null)
+                        superThis.modifyInput('reset', null).modifyInput('make visible').modifyInput('set placeholder', 'Choose structural element size in px')
+                        break
+                    case 3:
+                        superThis.modifyInput('reset', null).modifyInput('make visible').modifyInput('set placeholder', 'Choose structural element size in px')
+                        break
+                    default: superThis.modifyInput('make hidden')
                         break
                 }
             })
@@ -85,20 +95,36 @@ var carousel = {
             console.log('KMEANS STEP3')
             this.appendColours()
             let filterNumber = superThis.clickedFilterIndex
+            let initPayload = { filterNumber: filterNumber + 1, imgNumber: superThis.choosenImageNumber - 1 }
+            let finalPayload
 
-            ajax.sendPostRequest('/kmeans/step2', {
-                filterNumber: filterNumber + 1, imgNumber: superThis.choosenImageNumber - 1, reconstructionCoords: superThis.reconstructionCoords
-            })
+            switch (filterNumber) {
+                case 0: finalPayload = Object.assign(initPayload, { reconstructionCoords: superThis.reconstructionCoords })
+                    break
+                case 1: finalPayload = initPayload
+                    break
+                case 2:
+                    let seSize = readInputValue()
+                    finalPayload = Object.assign(initPayload, { seSize })
+                    break
+                case 3:
+                    let seSize = readInputValue()
+                    finalPayload = Object.assign(initPayload, { seSize })
+                    break
+            }
+
+            ajax.sendPostRequest('/kmeans/step2', finalPayload)
                 .done(function (res) {
                     console.log(res)
                 })
-                .fail(function (err) {   
+                .fail(function (err) {
                     console.log(err)
                 })
         }
         else if ($('.carousel-input').attr('name') === 'step1') {
             console.log('KMEANS STEP2')
-            $('.carousel-input').css({ 'visibility': 'hidden' })            
+
+            superThis.modifyInput('make hidden', null)
             superThis.choosenImageNumber = $('.carousel-input').val()
 
             const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], superThis.kmeansClusteredImages[superThis.choosenImageNumber - 1]))
@@ -145,6 +171,25 @@ var carousel = {
         return $(".filters-list").find("li").filter(function () {
             return $(this).css("background-color") === "rgb(208, 156, 0)";
         })
+    },
+    modifyInput: function (option, text) {
+        switch (option) {
+            case 'make visible':
+                $('.carousel-input').css({ 'visibility': 'visible' })
+                return this
+            case 'make hidden':
+                $('.carousel-input').css({ 'visibility': 'hidden' })
+                return this
+            case 'set placeholder':
+                $('.carousel-input').attr('placeholder', text)
+                return this
+            case 'reset':
+                $('.carousel-input').val(null)
+                return this
+        }
+    },
+    readInputValue: function () {
+        return $('.carousel-input').val()
     },
     kmeansClusteredImages: null,
     reconstructionCoords: [],

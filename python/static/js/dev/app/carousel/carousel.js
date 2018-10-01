@@ -32,7 +32,7 @@ var carousel = {
                         $(`.filters-list li:nth-child(${i + 1})`).css({ 'background-color': 'rgb(68, 66, 66)' })
                     }
                 }
-
+                superThis.clickedFilterIndex = $(this).index()
                 switch ($(this).index()) {
                     case 0:
                         $('.reconstruction-pts').removeClass('d-none')
@@ -43,6 +43,7 @@ var carousel = {
             })
         })
     },
+    clickedFilterIndex: null,
     generateEmptyCarousel: function (params, clustersNumber) {
         var superThis = this
 
@@ -76,13 +77,14 @@ var carousel = {
             })
             .fail(function (err) {
                 console.log(err)
-            })  
+            })
     },
     carouselSubmit: function () {
         var superThis = this
         if ($('.carousel-input').attr('name') === 'step2') {
             console.log('KMEANS STEP3')
-            const filterNumber = this.appendColours()
+            this.appendColours()
+            let filterNumber = superThis.clickedFilterIndex
 
             ajax.sendPostRequest('/kmeans/step2', {
                 filterNumber: filterNumber + 1, imgNumber: superThis.choosenImageNumber - 1, reconstructionCoords: superThis.reconstructionCoords
@@ -90,12 +92,13 @@ var carousel = {
                 .done(function (res) {
                     console.log(res)
                 })
-                .fail(function (err) {
+                .fail(function (err) {   
                     console.log(err)
                 })
         }
         else if ($('.carousel-input').attr('name') === 'step1') {
             console.log('KMEANS STEP2')
+            $('.carousel-input').css({ 'visibility': 'hidden' })            
             superThis.choosenImageNumber = $('.carousel-input').val()
 
             const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], superThis.kmeansClusteredImages[superThis.choosenImageNumber - 1]))
@@ -141,7 +144,7 @@ var carousel = {
     appendColours: function () {
         return $(".filters-list").find("li").filter(function () {
             return $(this).css("background-color") === "rgb(208, 156, 0)";
-        }).index()
+        })
     },
     kmeansClusteredImages: null,
     reconstructionCoords: [],

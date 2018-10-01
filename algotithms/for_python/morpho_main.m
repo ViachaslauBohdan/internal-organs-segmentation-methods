@@ -13,11 +13,8 @@ function [seg_image] = morpho_main(filter_number,mask,x_reconstruction_coords,y_
 
         if strcmp(filter_number,'1')
              [image_to_process] = reconstruct(marker,mask);
-             
-%             render_image(image_to_process);
         elseif strcmp(filter_number,'2')
-            [seg_image] = fill_holes(image_to_process);
-            seg_image = pylist_from_matlab_matrix(seg_image)
+            [image_to_process] = fill_holes(mask);
         elseif strcmp(filter_number,'3')
             se_radius = input('enter structure element radius (example: 11):')
             
@@ -49,6 +46,8 @@ end
 
 function [im_filled] = fill_holes(image)
 im_filled = imfill(image,'holes');
+figure;
+imshow(im_filled);
 end
 
 function [pylist] = generate_pylist(matrix)

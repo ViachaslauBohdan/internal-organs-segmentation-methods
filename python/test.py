@@ -1,7 +1,7 @@
 obj = {
-    'payload': {
-        'arr':5
+    "payload": {
+        "reconstructionCoords": 5
     }
 }
-
-print(str(5),'432')
+if(not obj.get("payload").get("reconstructionCoordsd")):
+    print(4)

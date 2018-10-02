@@ -82,16 +82,16 @@ def startKmeansStep2():
     yReconstructionCoords = []
     se_size = 5
 
-    if hasattr(json['payload'], 'reconstructionCoords'):
+    if (json['payload']['reconstructionCoords']):
 
-        for el in json['reconstructionCoords']:
+        for el in json['payload']['reconstructionCoords']:
             xReconstructionCoords.append(el['x'])
             yReconstructionCoords.append(el['y'])
 
         xReconstructionCoords = matlab.double(xReconstructionCoords)
         yReconstructionCoords = matlab.double(yReconstructionCoords)
         print('KMEANS STEP2: ',filter_number,xReconstructionCoords,yReconstructionCoords)
-    elif hasattr(json['payload'], 'seSize'):
+    elif (json['payload']['seSize']):
         se_size = json['seSize']
  
 

@@ -1,7 +1,7 @@
 function [seg_image] = morpho_main(filter_number,mask,x_reconstruction_coords,y_reconstruction_coords,se_radius)
 
         if strcmp(filter_number,'1')
-            marker = false(size(mask,2));
+            marker = false(size(mask));
             for i=1:size(x_reconstruction_coords)
                 marker(y_reconstruction_coords(i),x_reconstruction_coords(i)) = true;
             end

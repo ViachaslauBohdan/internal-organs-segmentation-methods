@@ -3,5 +3,6 @@ obj = {
         "reconstructionCoords": 5
     }
 }
-if(not obj.get("payload").get("reconstructionCoordsd")):
+if(obj["payload"].get("reconstructionCoordsf")):
     print(4)
+print(obj["payload"].get("reconstructionCoordsf"))

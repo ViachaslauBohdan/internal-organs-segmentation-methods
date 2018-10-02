@@ -82,7 +82,7 @@ def startKmeansStep2():
     yReconstructionCoords = []
     se_size = 5
 
-    if (json['payload']['reconstructionCoords']):
+    if (json.get('payload').get('reconstructionCoords')):
 
         for el in json['payload']['reconstructionCoords']:
             xReconstructionCoords.append(el['x'])
@@ -91,8 +91,8 @@ def startKmeansStep2():
         xReconstructionCoords = matlab.double(xReconstructionCoords)
         yReconstructionCoords = matlab.double(yReconstructionCoords)
         print('KMEANS STEP2: ',filter_number,xReconstructionCoords,yReconstructionCoords)
-    elif (json['payload']['seSize']):
-        se_size = json['seSize']
+    elif (json.get('payload').get('seSize')):
+        se_size = json['payload']['seSize']
  
 
     img_to_process = matlab_engine.kmeans_py_step2(str(filter_number),matlab.logical(kmeans_arrays[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=1)  

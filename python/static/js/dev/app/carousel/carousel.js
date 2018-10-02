@@ -97,6 +97,7 @@ var carousel = {
             let filterNumber = superThis.clickedFilterIndex
             let initPayload = { filterNumber: filterNumber + 1, imgNumber: superThis.choosenImageNumber - 1 }
             let finalPayload
+            let seSize
 
             switch (filterNumber) {
                 case 0: finalPayload = Object.assign(initPayload, { reconstructionCoords: superThis.reconstructionCoords })
@@ -104,11 +105,11 @@ var carousel = {
                 case 1: finalPayload = initPayload
                     break
                 case 2:
-                    let seSize = readInputValue()
+                    seSize = superThis.readInputValue()
                     finalPayload = Object.assign(initPayload, { seSize })
                     break
                 case 3:
-                    let seSize = readInputValue()
+                    seSize = superThis.readInputValue()
                     finalPayload = Object.assign(initPayload, { seSize })
                     break
             }
@@ -116,6 +117,10 @@ var carousel = {
             ajax.sendPostRequest('/kmeans/step2', finalPayload)
                 .done(function (res) {
                     console.log(res)
+                    const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.img_to_process))
+                    cv.imshow(`canvas1`, m)
+                    this.activateCarousel(1)
+                    $('#dicomImgModal').modal()
                 })
                 .fail(function (err) {
                     console.log(err)
@@ -165,6 +170,12 @@ var carousel = {
         $(".carousel-control-next").click(function () {
             $("#dicom-images-carousel").carousel("next")
         })
+
+    },
+    feelCarouselWithData: function (numberOfSlides) {
+        if (numberOfSlides === 1) {
+
+        }
 
     },
     appendColours: function () {

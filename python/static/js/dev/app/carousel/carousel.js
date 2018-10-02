@@ -1,5 +1,6 @@
 import { ajax } from '../ajax-utils/ajax'
 import loadFileFromPC from '../files-loader/load-file-from-pc'
+import { commonUtils } from '../common-utils/utils'
 
 
 var carousel = {
@@ -69,6 +70,8 @@ var carousel = {
 
         ajax.sendGetRequest(url, params)
             .done(function (res) {
+                commonUtils.deactivateSpinner()
+                if(!$('#dicomImgModal').is(':visible')) $('#dicomImgModal').modal()
                 superThis.feelCarouselWithData(res, clustersNumber)
             })
             .fail(function (err) {
@@ -143,6 +146,8 @@ var carousel = {
                 ajax.sendPostRequest(url, finalPayload)
                     .done(function (res) {
                         console.log(res)
+                        commonUtils.deactivateSpinner()
+                        if(!$('#dicomImgModal').is(':visible')) $('#dicomImgModal').modal()
                         const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.processedImage))
                         superThis.focusedImage = m
                         cv.imshow(`canvas1`, m)
@@ -165,7 +170,7 @@ var carousel = {
             let carouselElement
             let carouselItemIndicator
 
-            $('.modal-title').text('Step 2: select further processing filter number')
+            $('.carousel-modal-title').text('Step 2: select further processing filter number')
             $('.processing-filters').css({ 'display': 'inherit', 'color': 'white' })
             $('.carousel-input').attr('name', 'step2') //step detector
 

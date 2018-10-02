@@ -6,6 +6,7 @@ import { ajax } from './ajax-utils/ajax'
 import initMainButtons from './main-buttons/main-buttons-activator'
 import carousel from './carousel/carousel'
 import loadFileFromPC from './files-loader/load-file-from-pc'
+import {commonUtils} from './common-utils/utils'
 
  
 
@@ -26,7 +27,7 @@ $(document).ready(function () {
 
       ajax.sendPostRequest(suffix, coordsArray)
         .done(function (res) {
-          $('#spinner').html('<p>processing finished</p>')
+          commonUtils.deactivateSpinner()
           const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
           cv.imshow('canvasOutput', m)
         })
@@ -35,30 +36,6 @@ $(document).ready(function () {
         })
     }
   })
-
-
-  // $("#processing-button").click(() => {
-  //   if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {
-  //     const clustersNumber = $("input[type=number][name='fuzzy']").val()
-  //     const params = { fileName, clustersNumber }
-  //     carousel.generateEmptyCarousel(params, clustersNumber)
-
-  //     ajax.sendGetRequest('/fuzzy/step1', params)
-  //       .done(function (res) {
-  //         $('#spinner').html('<p>processing finished</p>')
-  //         console.log(res.result)
-  //         let m = cv.matFromArray(1, 8, cv.CV_8UC1, res.result)
-  //         console.log(m.data)
-
-  //         cv.imshow('canvasOutput', m)
-  //         // const res = JSON.parse(jsonRes)
-  //         // console.log(res)
-  //       })
-  //       .fail(function (err) {
-  //         console.log(err)
-  //       })
-  //   }
-  // })
 
   $('.cornerstone-canvas').click(function (e) {
     if (!$('#seed-list-item').length) $('#no-seeds').remove()

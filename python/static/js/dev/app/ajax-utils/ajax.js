@@ -1,8 +1,10 @@
+import { commonUtils } from '../common-utils/utils'
 
-var ajax =  {
+var ajax = {
     sendGetRequest: function sendGetRequest(suffix, params) {
-        console.log('send get request')      
-          
+        console.log('send get request')
+        commonUtils.activateSpinner()
+
         const url = this.generateURL(suffix)
         return $.ajax({
             url: url,
@@ -12,10 +14,11 @@ var ajax =  {
             dataType: "json",
         })
     },
-     
+
     sendPostRequest: function sendPostRequest(suffix, payload) {
         console.log('send post   request')
-
+        commonUtils.activateSpinner()
+        
         const url = this.generateURL(suffix)
         return $.ajax({
             url: url,

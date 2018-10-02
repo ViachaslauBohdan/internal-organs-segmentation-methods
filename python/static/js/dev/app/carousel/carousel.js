@@ -98,7 +98,8 @@ var carousel = {
             let initPayload = { filterNumber: filterNumber + 1, imgNumber: superThis.choosenImageNumber - 1 }
             let finalPayload
             let seSize
-
+            let case4 = false
+            console.log(filterNumber)
             switch (filterNumber) {
                 case 0: finalPayload = Object.assign(initPayload, { reconstructionCoords: superThis.reconstructionCoords })
                     break
@@ -112,19 +113,29 @@ var carousel = {
                     seSize = superThis.readInputValue()
                     finalPayload = Object.assign(initPayload, { seSize })
                     break
-            }
+                case 4:
+                    case4 = true
+                    console.log('case4')
+                    $('#dicomImgModal').modal('hide')
+                    console.log(superThis.focusedImage)
+                    cv.imshow('canvasOutput',superThis.focusedImage)
+                    break
 
-            ajax.sendPostRequest('/kmeans/step2', finalPayload)
-                .done(function (res) {
-                    console.log(res)
-                    const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.img_to_process))
-                    cv.imshow(`canvas1`, m)
-                    this.activateCarousel(1)
-                    $('#dicomImgModal').modal()
-                })
-                .fail(function (err) {
-                    console.log(err)
-                })
+            }
+            if (!case4) {
+                ajax.sendPostRequest('/kmeans/step2', finalPayload)
+                    .done(function (res) {
+                        console.log(res)
+                        const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.processedImage))
+                        superThis.focusedImage = m
+                        cv.imshow(`canvas1`, m)
+                        superThis.choosenImageNumber = 1
+
+                    })
+                    .fail(function (err) {
+                        console.log(err)
+                    })
+            }
         }
         else if ($('.carousel-input').attr('name') === 'step1') {
             console.log('KMEANS STEP2')
@@ -133,6 +144,7 @@ var carousel = {
             superThis.choosenImageNumber = $('.carousel-input').val()
 
             const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], superThis.kmeansClusteredImages[superThis.choosenImageNumber - 1]))
+            superThis.focusedImage = m
             let carouselElement
             let carouselItemIndicator
 
@@ -178,6 +190,7 @@ var carousel = {
         }
 
     },
+    focusedImage: undefined,
     appendColours: function () {
         return $(".filters-list").find("li").filter(function () {
             return $(this).css("background-color") === "rgb(208, 156, 0)";

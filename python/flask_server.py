@@ -12,8 +12,9 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)
 matlab_engine = matlab.engine.start_matlab()
+kmeans_images = []
 
-kmeans_arrays = []
+
 
 
 def normalize_unicode_string(data):
@@ -67,9 +68,9 @@ def startKmeansStep1():
             request.args.get('clustersNumber'))
 
         clustered_uint8_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
-        global kmeans_arrays
-        kmeans_arrays = clustered_uint8_images
-        return jsonify({'arrayOfImgs': kmeans_arrays })
+        global kmeans_images
+        kmeans_images = clustered_uint8_images
+        return jsonify({'arrayOfImgs': kmeans_images })
 
 @app.route("/kmeans/step2", methods=['GET','POST'])
 def startKmeansStep2():
@@ -94,10 +95,11 @@ def startKmeansStep2():
     elif (json.get('payload').get('seSize')):
         se_size = json['payload']['seSize']
  
-
-    img_to_process = matlab_engine.kmeans_py_step2(str(filter_number),matlab.logical(kmeans_arrays[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=1)  
-
-    return jsonify({'img_to_process': img_to_process})
+    global kmeans_images
+    processed_image = matlab_engine.kmeans_py_step2(str(filter_number),matlab.logical(kmeans_images[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=1)  
+    kmeans_images = []
+    kmeans_images.append(processed_image)
+    return jsonify({'processedImage': processed_image})
 
 
 

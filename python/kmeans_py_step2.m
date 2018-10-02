@@ -1,11 +1,14 @@
 function [seg_image] = morpho_main(filter_number,mask,x_reconstruction_coords,y_reconstruction_coords,se_radius)
 y_reconstruction_coords
 x_reconstruction_coords
+
         if strcmp(filter_number,'1')
             marker = false(size(mask));
             for i=1:size(x_reconstruction_coords)
                 marker(y_reconstruction_coords(i),x_reconstruction_coords(i)) = true;
             end
+            size(mask)
+            size(marker)
              [image_to_process] = reconstruct(marker,mask);
         elseif strcmp(filter_number,'2')
             [image_to_process] = fill_holes(mask);

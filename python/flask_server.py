@@ -12,7 +12,7 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)
 matlab_engine = matlab.engine.start_matlab()
-kmeans_images = []
+clustered_images = []
 
 
 
@@ -43,8 +43,7 @@ def startSeedProcessing():
         image_name = normalize_unicode_string(request.args.get('fileName'))
         distance_ratio = normalize_unicode_string(request.args.get('ratio'))
         distance_type = normalize_unicode_string(request.args.get('distance'))
-        neigbr_number = normalize_unicode_string(
-            request.args.get('neighboursNumber'))
+        neigbr_number = normalize_unicode_string(request.args.get('neighboursNumber'))
 
         for el in json['payload']:
             xSeedsCoordinates.append(el['x'])
@@ -59,21 +58,25 @@ def startSeedProcessing():
         print(output_img)
         return jsonify({'result': output_img})
 
-
+@app.route("/fuzzy/step1", methods=['GET'])
 @app.route("/kmeans/step1", methods=['GET'])
 def startKmeansStep1():
     if request.method == 'GET':
         image_name = normalize_unicode_string(request.args.get('fileName'))
-        clusters_number = normalize_unicode_string(
-            request.args.get('clustersNumber'))
+        clusters_number = normalize_unicode_string(request.args.get('clustersNumber'))
 
-        clustered_uint8_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
-        global kmeans_images
-        kmeans_images = clustered_uint8_images
-        return jsonify({'arrayOfImgs': kmeans_images })
+        if(request.path == '/kmeans/step1'):
+            clustered_uint8_images = matlab_engine.kmeans_py_step1(image_name, float(clusters_number), nargout=1)
+        elif(request.path == '/fuzzy/step1'):
+            clustered_uint8_images = matlab_engine.fuzzy_py_step1(image_name, float(clusters_number), nargout=1)
+        print('REQUESTED URL: ',request.path)
+        global clustered_images
+        clustered_images = clustered_uint8_images
+        return jsonify({'arrayOfImgs': clustered_images })
 
 @app.route("/kmeans/step2", methods=['GET','POST'])
-def startKmeansStep2():
+@app.route("/fuzzy/step2", methods=['GET','POST'])
+def startMorphology():
     import matlab    
     json = request.get_json()    
     filter_number = json['payload']['filterNumber']
@@ -91,15 +94,28 @@ def startKmeansStep2():
 
         xReconstructionCoords = matlab.double(xReconstructionCoords)
         yReconstructionCoords = matlab.double(yReconstructionCoords)
-        print('KMEANS STEP2: ',filter_number,xReconstructionCoords,yReconstructionCoords)
+        print('MORPHOLOGY STEP2: ',filter_number,xReconstructionCoords,yReconstructionCoords)
     elif (json.get('payload').get('seSize')):
         se_size = json['payload']['seSize']
  
-    global kmeans_images
-    processed_image = matlab_engine.kmeans_py_step2(str(filter_number),matlab.logical(kmeans_images[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=1)  
-    kmeans_images = []
-    kmeans_images.append(processed_image)
+    global clustered_images
+    processed_image = matlab_engine.morphology(str(filter_number),matlab.logical(clustered_images[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=1)  
+    clustered_images = []
+    clustered_images.append(processed_image)
     return jsonify({'processedImage': processed_image})
+
+# @app.route("/fuzzy/step1", methods=['GET'])
+# def startFuzzyStep1():
+#     if request.method == 'GET':
+#         image_name = normalize_unicode_string(request.args.get('fileName'))
+#         clusters_number = normalize_unicode_string(request.args.get('clustersNumber'))
+
+#         clustered_uint8_images = matlab_engine.fuzzy_py_step1(image_name, float(clusters_number), nargout=1)
+#         global clustered_images
+#         clustered_images = clustered_uint8_images
+#         return jsonify({'arrayOfImgs': clustered_images })
+
+
 
 
 

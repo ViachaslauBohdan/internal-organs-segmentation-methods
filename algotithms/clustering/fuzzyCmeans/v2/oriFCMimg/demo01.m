@@ -47,7 +47,7 @@ function image_to_process = choose_cluster(clusterNum,Unow)
 end
 
 function main_plus_render(I,image_to_process)
-   addpath('morphology');
+   addpath(genpath('~/Pulpit/magisterka/algotithms/morphology/'));
    seg_image = main(image_to_process);
    render_seg_subplots(I,seg_image);
 end

@@ -22,7 +22,17 @@ var carousel = {
                     const clustersNumber = $("input[type=number][name='kmeans']").val()
                     let fileName = loadFileFromPC.getLoadedFileName()
                     const params = { fileName, clustersNumber }
-                    carousel.generateEmptyCarousel(params, clustersNumber)
+                    const url = '/kmeans/step1'
+                    superThis.generateCarousel(params, clustersNumber, url)
+                }
+            })
+            $("#processing-button").click(() => {
+                if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {
+                    const clustersNumber = $("input[type=number][name='fuzzy']").val()
+                    let fileName = loadFileFromPC.getLoadedFileName()
+                    const params = { fileName, clustersNumber }
+                    const url = '/fuzzy/step1'
+                    superThis.generateCarousel(params, clustersNumber, url)
                 }
             })
             $('.filters-list li').click(function () {
@@ -54,40 +64,44 @@ var carousel = {
         })
     },
     clickedFilterIndex: null,
-    generateEmptyCarousel: function (params, clustersNumber) {
+    generateCarousel: function (params, clustersNumber, url) {
         var superThis = this
 
-        ajax.sendGetRequest('/kmeans/step1', params)
+        ajax.sendGetRequest(url, params)
             .done(function (res) {
-                superThis.kmeansClusteredImages = res.arrayOfImgs
-
-                res.arrayOfImgs.forEach((arrayImg, index) => {
-                    const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], arrayImg))
-                    let carouselElement
-                    let carouselItemIndicator
-
-                    if (index === 0) {
-                        carouselElement = superThis.activeSlideDOM.replace('#INDEX#', index).replace('#INDEX+1#', index + 1)
-                        carouselItemIndicator = superThis.activeItemIndicator.replace('#INDEX+1#', index + 1)
-                    }
-                    else {
-                        carouselElement = superThis.notActiveSlideDOM.replace('#INDEX#', index).replace('#INDEX+1#', index + 1)
-                        carouselItemIndicator = superThis.notActiveItemIndicator.replace('#INDEX+1#', index + 1)
-                    }
-
-                    $('.carousel-inner').append(carouselElement)
-                    $('.carousel-indicators').append(carouselItemIndicator)
-                    $(".carousel-item").css({ 'width': '100%', 'height': '600px' })
-
-                    cv.imshow(`canvas${index}`, m);
-
-                })
-                superThis.activateCarousel(clustersNumber)
-                $('#dicomImgModal').modal()
+                superThis.feelCarouselWithData(res, clustersNumber)
             })
             .fail(function (err) {
                 console.log(err)
             })
+    },
+    feelCarouselWithData: function (res, clustersNumber) {
+        var superThis = this
+        superThis.clusteredImages = res.arrayOfImgs
+
+        res.arrayOfImgs.forEach((arrayImg, index) => {
+            const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], arrayImg))
+            let carouselElement
+            let carouselItemIndicator
+
+            if (index === 0) {
+                carouselElement = superThis.activeSlideDOM.replace('#INDEX#', index).replace('#INDEX+1#', index + 1)
+                carouselItemIndicator = superThis.activeItemIndicator.replace('#INDEX+1#', index + 1)
+            }
+            else {
+                carouselElement = superThis.notActiveSlideDOM.replace('#INDEX#', index).replace('#INDEX+1#', index + 1)
+                carouselItemIndicator = superThis.notActiveItemIndicator.replace('#INDEX+1#', index + 1)
+            }
+
+            $('.carousel-inner').append(carouselElement)
+            $('.carousel-indicators').append(carouselItemIndicator)
+            $(".carousel-item").css({ 'width': '100%', 'height': '600px' })
+
+            cv.imshow(`canvas${index}`, m);
+
+        })
+        superThis.activateCarousel(clustersNumber)
+        $('#dicomImgModal').modal()
     },
     carouselSubmit: function () {
         var superThis = this
@@ -118,12 +132,15 @@ var carousel = {
                     console.log('case4')
                     $('#dicomImgModal').modal('hide')
                     console.log(superThis.focusedImage)
-                    cv.imshow('canvasOutput',superThis.focusedImage)
+                    cv.imshow('canvasOutput', superThis.focusedImage)
                     break
 
             }
             if (!case4) {
-                ajax.sendPostRequest('/kmeans/step2', finalPayload)
+                let url = '/kmeans/step2'
+                if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') url = '/fuzzy/step2'
+
+                ajax.sendPostRequest(url, finalPayload)
                     .done(function (res) {
                         console.log(res)
                         const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.processedImage))
@@ -143,7 +160,7 @@ var carousel = {
             superThis.modifyInput('make hidden', null)
             superThis.choosenImageNumber = $('.carousel-input').val()
 
-            const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], superThis.kmeansClusteredImages[superThis.choosenImageNumber - 1]))
+            const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], superThis.clusteredImages[superThis.choosenImageNumber - 1]))
             superThis.focusedImage = m
             let carouselElement
             let carouselItemIndicator
@@ -184,12 +201,7 @@ var carousel = {
         })
 
     },
-    feelCarouselWithData: function (numberOfSlides) {
-        if (numberOfSlides === 1) {
 
-        }
-
-    },
     focusedImage: undefined,
     appendColours: function () {
         return $(".filters-list").find("li").filter(function () {
@@ -215,7 +227,7 @@ var carousel = {
     readInputValue: function () {
         return $('.carousel-input').val()
     },
-    kmeansClusteredImages: null,
+    clusteredImages: null,
     reconstructionCoords: [],
     choosenImageNumber: null,
     activeSlideDOM: `

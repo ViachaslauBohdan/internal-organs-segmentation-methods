@@ -1,7 +1,7 @@
 function [L,C,U,LUT,H,Imin,Imax] = DemoFCM
     % Segment a sample 2D image into 3 classes using fuzzy c-means algorithm. 
     % Note that similar syntax would be used for c-means based segmentation. 
-    addpath('algorithms');
+    addpath(genpath('~/Pulpit/magisterka/algotithms/utils'));
     im = read_image(2);
     
     % im=imread('cameraman.tif'); % sample image

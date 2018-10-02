@@ -12,9 +12,11 @@ import loadFileFromPC from './files-loader/load-file-from-pc'
 
 $(document).ready(function () {
   loadFileFromPC.activateClickEventListener()
+
   $("#processing-button").click(() => { 
     if ($('#seed-button').css('background-color') == 'rgb(33, 165, 34)') {
-      console.log('START SEED PROCESSING')      
+      console.log('START SEED PROCESSING')   
+
       const radioChecked = $("input[type=radio][name=seed]:checked").val()
       const fileName = loadFileFromPC.getLoadedFileName()
       const neighboursNumber = $("input[type=radio][name='neighbours']:checked").val()
@@ -26,7 +28,7 @@ $(document).ready(function () {
         .done(function (res) {
           $('#spinner').html('<p>processing finished</p>')
           const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
-          cv.imshow('canvasOutput', m);
+          cv.imshow('canvasOutput', m)
         })
         .fail(function (err) {
           console.log(err)
@@ -35,27 +37,28 @@ $(document).ready(function () {
   })
 
 
-  $("#processing-button").click(() => {
-    if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {
-      const clustersNumber = $("input[type=number][name='fuzzy']").val()
-      const params = { fileName, clustersNumber }
+  // $("#processing-button").click(() => {
+  //   if ($('#fuzzy-button').css('background-color') == 'rgb(33, 165, 34)') {
+  //     const clustersNumber = $("input[type=number][name='fuzzy']").val()
+  //     const params = { fileName, clustersNumber }
+  //     carousel.generateEmptyCarousel(params, clustersNumber)
 
-      ajax.sendGetRequest('/fuzzy', params)
-        .done(function (res) {
-          $('#spinner').html('<p>processing finished</p>')
-          console.log(res.result)
-          let m = cv.matFromArray(1, 8, cv.CV_8UC1, res.result);
-          console.log(m.data)
+  //     ajax.sendGetRequest('/fuzzy/step1', params)
+  //       .done(function (res) {
+  //         $('#spinner').html('<p>processing finished</p>')
+  //         console.log(res.result)
+  //         let m = cv.matFromArray(1, 8, cv.CV_8UC1, res.result)
+  //         console.log(m.data)
 
-          cv.imshow('canvasOutput', m);
-          // const res = JSON.parse(jsonRes)
-          // console.log(res)
-        })
-        .fail(function (err) {
-          console.log(err)
-        })
-    }
-  })
+  //         cv.imshow('canvasOutput', m)
+  //         // const res = JSON.parse(jsonRes)
+  //         // console.log(res)
+  //       })
+  //       .fail(function (err) {
+  //         console.log(err)
+  //       })
+  //   }
+  // })
 
   $('.cornerstone-canvas').click(function (e) {
     if (!$('#seed-list-item').length) $('#no-seeds').remove()

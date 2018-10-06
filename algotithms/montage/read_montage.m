@@ -2,7 +2,12 @@ function [im_array,I] = read_montage()
 close all;
 clear;
 im_sets = {'23_16_2006/','211_16_2005/','217_16_2017/','239_64_2006/','407_16_2006/'};
-im_set = im_sets{5};
+
+
+
+im_set = im_sets{1};
+
+
 path_to_folder = strcat('~/','Pulpit/magisterka/ct_images/',im_set,'SE3/');
 dicomlist = dir(path_to_folder);
 filenames = string({dicomlist.name});
@@ -30,6 +35,7 @@ end
 % I =im_array{19};
 % imshow(im_array{9});
 % i = imcontrast(fig);
+
 end
 
 function h = subplottight(n,m,i)

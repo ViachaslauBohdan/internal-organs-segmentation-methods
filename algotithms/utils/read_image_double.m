@@ -16,7 +16,6 @@ in_range2 = 1;
 stop_first_loop = false;
 
 for i=1:150
-    i
     J = imadjust(I,[in_range1 in_range2],[0 1]);
     I = J;
     N = histcounts(J);
@@ -50,9 +49,10 @@ end
 % I = round(I);
 % I=im2uint8(I);
 image = J;
-h1 = figure;
-imshow(J);
-imcontrast(h1);
+
+% h1 = figure;
+% imshow(J);
+% imcontrast(h1);
 end
 
 

@@ -49,6 +49,8 @@ function [bin_image,props,centroid] = classify_organs(bin_image)
     classes = {'left kidney', 'right kidney','spine','liver', 'bowel loops', 'muscles', 'stomach'};
     properties = ["Area","Centroid","Perimeter","BoundingBox"];
     
+    ref_props = ...
+        obj
     
     props = regionprops(bin_image,"Area","Centroid","Perimeter","BoundingBox",'MajorAxisLength','MinorAxisLength');
     area = cat(1,props.Area);

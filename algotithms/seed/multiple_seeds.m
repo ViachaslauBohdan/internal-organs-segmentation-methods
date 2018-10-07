@@ -10,7 +10,9 @@ clear all;
 % I = imadjust(I,[0.7 0.8],[0 1]);
 
 addpath(genpath('../utils'))
-I = read_image_double(1);
+fname = {'img_0299_a','img_0300_a','img_0122_e','img_0125_e','img_0144_e',...
+    'img_0141_e','img_0142_e','img_0143_e','img_0144_e'};
+I = read_image_double_py(fname{1,1});
 
 
 prompt = 'Enter number of neighbours (ex. 4 or 8) ';
@@ -19,7 +21,9 @@ neigbr_number = input(prompt);
 
 
 if(isempty(neigbr_number))
+    
     neigbr_number = 4;
+    
 end
 
 imshow(I,[]);
@@ -33,7 +37,9 @@ number_of_seeds = size(xi,1);
 J = regiongrowing(I,neigbr_number,xi,yi,number_of_seeds); 
 addpath(genpath('../classification'))
 bin_image = im2bw(J,0.5);
-[img,props,centroid] = classify_organs(bin_image);
+[organ_name,distance,ref_props,props] = classify_organs(bin_image);
+organ_name
+
 figure;
 imshow([J,bin_image])
 
@@ -44,26 +50,19 @@ imshow([J,bin_image])
 % a = label2rgb(J);
 % imshow(a);
 
-function [bin_image,props,centroid] = classify_organs(bin_image)
-
-    classes = {'left kidney', 'right kidney','spine','liver', 'bowel loops', 'muscles', 'stomach'};
-    properties = ["Area","Centroid","Perimeter","BoundingBox"];
-    
-    
-    props = regionprops(bin_image,"Area","Centroid","Perimeter","BoundingBox",'MajorAxisLength','MinorAxisLength');
-    area = cat(1,props.Area);
-    centroid = cat(1,props.Centroid)
-    centroidX = centroid(1,1);
-    centroidY = centroid(1,2);
-    
-    axis_ratio = cat(1,props.MajorAxisLength)/cat(1,props.MinorAxisLength)
-    
-    if(centroidX <= 200 & centroidY >= 300 & axis_ratio >= 1 & axis_ratio < 1.25)
-        organ_class = 'left kidnej'
-    elseif(centroidX >= 310 & centroidY >= 300 & axis_ratio >= 1 & axis_ratio < 1.25)
-        organ_class = 'right kidnej'
-    end
-end
+% function [bin_image,props,centroid] = classify_organs(bin_image)
+% 
+%     classes = {'left kidney', 'right kidney','spine','liver', 'bowel loops', 'muscles', 'stomach'};
+%     properties = ["Area","Centroid","Perimeter","BoundingBox"];
+%     
+%     
+%     props = regionprops(bin_image,"Area","Centroid","Perimeter","BoundingBox",'MajorAxisLength','MinorAxisLength');
+% %     area = cat(1,props.Area);
+% %     centroid = cat(1,props.Centroid)
+% %     centroidX = centroid(1,1);
+% %     centroidY = centroid(1,2);
+% %     axis_ratio = cat(1,props.MajorAxisLength)/cat(1,props.MinorAxisLength)
+% end
 
 
    

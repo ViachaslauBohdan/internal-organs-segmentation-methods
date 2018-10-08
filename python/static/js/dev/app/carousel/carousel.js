@@ -70,8 +70,9 @@ var carousel = {
 
         ajax.sendGetRequest(url, params)
             .done(function (res) {
+                console.log(res)
                 commonUtils.deactivateSpinner()
-                if(!$('#dicomImgModal').is(':visible')) $('#dicomImgModal').modal()
+                if (!$('#dicomImgModal').is(':visible')) $('#dicomImgModal').modal()
                 superThis.feelCarouselWithData(res, clustersNumber)
             })
             .fail(function (err) {
@@ -106,6 +107,17 @@ var carousel = {
         superThis.activateCarousel(clustersNumber)
         $('#dicomImgModal').modal()
     },
+    resetCarousel: function () {
+        const superThis = this
+        $('.carousel-container').html(superThis.emptyCarouselHTML)
+        $('.carousel-container').html()
+        superThis.modifyInput('reset', null).modifyInput('make visible').modifyInput('set placeholder', '"Image number (example: 2)"')
+        $('.carousel-input').attr('name','step1')
+        $('.processing-filters').css({ 'display': 'none'})
+        $('#reconstruction-points-container').append(`<div class="reconstruction-no-points">no points choosen.</div>`)
+        $('.carousel-modal-title').text('Step1: select one clustered image for further processing.')
+        
+    },
     carouselSubmit: function () {
         var superThis = this
         if ($('.carousel-input').attr('name') === 'step2') {
@@ -134,8 +146,27 @@ var carousel = {
                     case4 = true
                     console.log('case4')
                     $('#dicomImgModal').modal('hide')
-                    console.log(superThis.focusedImage)
                     cv.imshow('canvasOutput', superThis.focusedImage)
+
+                    let label
+                    let x
+                    let y
+                    const canvas = document.getElementById('canvasOutput')
+                    const ctx = canvas.getContext("2d")
+                    const organs = superThis.processingResponse.response[1]
+                    ctx.fillStyle = "#fb0"
+                    ctx.font = "bold 20px Arial"
+                    ctx.fontWeight
+                    ctx.textBaseline = "start"
+
+                    organs.forEach(el => {
+                        label = el.name
+                        x = el.centroidX
+                        y = el.centroidY
+                        console.log(el, label)
+                        ctx.fillText(label, x, y)
+                    })
+                    superThis.resetCarousel()
                     break
 
             }
@@ -146,12 +177,15 @@ var carousel = {
                 ajax.sendPostRequest(url, finalPayload)
                     .done(function (res) {
                         console.log(res)
+                        superThis.processingResponse = res
                         commonUtils.deactivateSpinner()
-                        if(!$('#dicomImgModal').is(':visible')) $('#dicomImgModal').modal()
-                        const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.processedImage))
+                        if (!$('#dicomImgModal').is(':visible')) $('#dicomImgModal').modal()
+                        const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.response[0]))
                         superThis.focusedImage = m
                         cv.imshow(`canvas1`, m)
                         superThis.choosenImageNumber = 1
+
+
 
                     })
                     .fail(function (err) {
@@ -208,6 +242,7 @@ var carousel = {
     },
 
     focusedImage: undefined,
+    processingResponse: undefined,
     appendColours: function () {
         return $(".filters-list").find("li").filter(function () {
             return $(this).css("background-color") === "rgb(208, 156, 0)";
@@ -247,6 +282,22 @@ var carousel = {
     </div>`,
     activeItemIndicator: `<li class='item#INDEX+1# active'" + "></li>`,
     notActiveItemIndicator: `<li class='item#INDEX+1#'" + "></li>`,
+    emptyCarouselHTML: 
+    `<div id="dicom-images-carousel" class="carousel slide">
+    <!-- Indicators -->
+    <ul class="carousel-indicators">
+    </ul>
+    <!-- The slideshow -->
+    <div class="carousel-inner" style="text-align:center">
+    </div>
+    <!-- Left and right controls -->
+    <a class="carousel-control-prev" href="#dicom-images-carousel">
+      <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#dicom-images-carousel">
+      <span class="carousel-control-next-icon"></span>
+    </a>
+  </div>`
 
 }
 

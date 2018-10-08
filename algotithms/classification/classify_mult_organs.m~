@@ -1,32 +1,31 @@
-function [organ_name,distance,ref_props,props] = classify_organs(bin_image)
+function [organs,props] = classify_organs(bin_image)
     classes = {'left kidney', 'right kidney','spine','liver', 'bowel loops', 'muscles', 'stomach'};
     properties = ["Area","Centroid","Perimeter","BoundingBox"];
     
-    props = regionprops(bin_image,"Area","Centroid","Perimeter","BoundingBox",'MajorAxisLength','MinorAxisLength');
-    centroid = cat(1,props.Centroid);
-    cX = centroid(1,1);
-    cY = centroid(1,2);
-    axis_ratio = cat(1,props.MajorAxisLength)/cat(1,props.MinorAxisLength);
-    area = cat(1,props.Area);
-    disp([cX;cY;axis_ratio;area])
+    L = bwlabel(bin_image);
+    props = regionprops(L,"Area","Centroid","Perimeter","BoundingBox",'MajorAxisLength','MinorAxisLength');
     
     ref_props = init_ref_props();
-    [organ_name,distance] = detect_organs(ref_props,props,false);
-    distance
-    [v,i] = min(distance);
-    dist_copy = distance;
-    dist_copy(i) = [];
-    [sec_value,sec_index] = min(dist_copy);
-    v
-    sec_value
-    if(abs(v - sec_value) < 10)
-        disp('recalculation')
-        [organ_name,distance] = detect_organs(ref_props,props,true)
+    organs = {};
+    for prop_index=1:size(props,1)
+%         assignin('base','prop_index',ind)
+        [organ,distance] = detect_organs(ref_props,props,false);
+%         distance
+        [v,i] = min(distance);
+        dist_copy = distance;
+        dist_copy(i) = [];
+        [sec_value,sec_index] = min(dist_copy);
+
+        if(abs(v - sec_value) < 10)
+            disp('recalculation')
+            [organ,distance] = detect_organs(ref_props,props,true)
+        end
+        organs{1,prop_index}=organ
     end
         
 end
 
-function [organ_name,dist_copy] = detect_organs(ref_props,props,consider_axis_ratio)
+function [organ,dist_copy] = detect_organs(ref_props,props,consider_axis_ratio)
     distance = [];
     for i=1:size(ref_props,2)
         distance(end+1) = calculate_dist(ref_props{1,i},props,consider_axis_ratio);
@@ -42,7 +41,7 @@ function [organ_name,dist_copy] = detect_organs(ref_props,props,consider_axis_ra
 %         else break
 %         end
 %     end
-    organ_name = ref_props{1,i}.name;
+    organ = ref_props{1,i};
 end
 
 function [vector] = extract_ref_props(ref_props,consider_axis_ratio)
@@ -60,10 +59,14 @@ end
 
 function [vector] = extract_props(props,consider_axis_ratio)
     centroid = cat(1,props.Centroid);
-    cX = centroid(1,1);
-    cY = centroid(1,2);
-    axis_ratio = cat(1,props.MajorAxisLength)/cat(1,props.MinorAxisLength);
-    area = cat(1,props.Area);
+    cX = centroid(prop_index,1);
+    cY = centroid(prop_index,2);
+    
+    axis_ratio_vector = cat(1,props.MajorAxisLength)./cat(1,props.MinorAxisLength);
+    axis_ratio = axis_ratio_vector(prop_index,1);
+    
+    area_vector = cat(1,props.Area);
+    area = area_vector(prop_index,1);
     if(consider_axis_ratio == false)
         vector = [cX, cY];
     else
@@ -73,8 +76,8 @@ function [vector] = extract_props(props,consider_axis_ratio)
 end
 
 function [dist] = calculate_dist(ref_props,props,consider_axis_ratio)
-    v_ref = extract_ref_props(ref_props,consider_axis_ratio);
-    v = extract_props(props,consider_axis_ratio);
+    v_ref = extract_ref_props(ref_props,consider_axis_ratio)
+    v = extract_props(props,consider_axis_ratio)
     dist = sqrt(sum(abs(v-v_ref).^2));
 end
 

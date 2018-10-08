@@ -28,7 +28,7 @@ header span:last-child {
 
 #content {
   background: #151a1f;
-  height: 100%;
+  min-height: 100%;
   padding-left: 15%;
   padding-right: 15%;
   color: white;

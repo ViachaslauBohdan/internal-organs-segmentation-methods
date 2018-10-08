@@ -6,17 +6,17 @@ import { ajax } from './ajax-utils/ajax'
 import initMainButtons from './main-buttons/main-buttons-activator'
 import carousel from './carousel/carousel'
 import loadFileFromPC from './files-loader/load-file-from-pc'
-import {commonUtils} from './common-utils/utils'
+import { commonUtils } from './common-utils/utils'
 
- 
+
 
 
 $(document).ready(function () {
   loadFileFromPC.activateClickEventListener()
 
-  $("#processing-button").click(() => { 
+  $("#processing-button").click(() => {
     if ($('#seed-button').css('background-color') == 'rgb(33, 165, 34)') {
-      console.log('START SEED PROCESSING')   
+      console.log('START SEED PROCESSING')
 
       const radioChecked = $("input[type=radio][name=seed]:checked").val()
       const fileName = loadFileFromPC.getLoadedFileName()
@@ -27,9 +27,34 @@ $(document).ready(function () {
 
       ajax.sendPostRequest(suffix, coordsArray)
         .done(function (res) {
+          console.log('GOT RESPONSE')
           commonUtils.deactivateSpinner()
-          const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], res.result))
+          const img = res.result[0]
+          const m = cv.matFromArray(512, 512, cv.CV_8U, [].concat.apply([], img))
           cv.imshow('canvasOutput', m)
+
+          let label
+          let x
+          let y
+          const canvas = document.getElementById('canvasOutput')
+          const ctx = canvas.getContext("2d")
+          ctx.fillStyle = "#fb0"
+          ctx.font = "bold 20px Arial"
+          ctx.fontWeight
+          ctx.textBaseline = "start"
+
+          res.result[1].forEach(el => {
+            label = el.name
+            x = el.centroidX
+            y = el.centroidY
+            console.log(el, label)
+            ctx.fillText(label, x, y)
+          })
+
+          coordsArray = []
+          $('#seed-list').html('<div id="no-seeds">No seed points choosen</div>')
+
+
         })
         .fail(function (err) {
           console.log(err)
@@ -48,9 +73,6 @@ $(document).ready(function () {
     $('#seed-list').append(newListItem)
 
   })
-
-
-
 })
 
 

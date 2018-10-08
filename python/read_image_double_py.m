@@ -67,10 +67,10 @@ end
 % I = round(I);
 % I=im2uint8(I);
 image = J;
-imshow(image);
-h1 = figure;
-imshow(J);
-imcontrast(h1);
+% imshow(image);
+% h1 = figure;
+% imshow(J);
+% imcontrast(h1);
 
 end
 

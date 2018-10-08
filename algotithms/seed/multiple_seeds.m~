@@ -10,11 +10,11 @@ clear all;
 % I = imadjust(I,[0.7 0.8],[0 1]);
 
 addpath(genpath('../utils'))
-fname = {'img_0308_a','img_0305_a','img_0299_a','img_0300_a','img_0122_e','img_0125_e','img_0144_e',...
+fname = {'img_0299_a','img_0300_a','img_0122_e','img_0125_e','img_0144_e',...
     'img_0141_e','img_0142_e','img_0143_e','img_0144_e'};
-I = read_image_double_py(fname{1,2});
+I = read_image_double_py(fname{1,1});
 
-
+%PROBLEM WITH [3,4]
 prompt = 'Enter number of neighbours (ex. 4 or 8) ';
 neigbr_number = input(prompt);
 
@@ -37,9 +37,8 @@ number_of_seeds = size(xi,1);
 J = regiongrowing(I,neigbr_number,xi,yi,number_of_seeds); 
 addpath(genpath('../classification'))
 bin_image = im2bw(J,0.5);
-% [organ_name,distance,ref_props,props] = classify_mult_organs(bin_image);
-[organs,props] = classify_mult_organs(bin_image);
-% organ_name
+[organ_name,distance,ref_props,props] = classify_organs(bin_image);
+organ_name
 
 figure;
 imshow([J,bin_image])

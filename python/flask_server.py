@@ -53,10 +53,10 @@ def startSeedProcessing():
         ySeedsMatlabCoordinates = matlab.double(ySeedsCoordinates)
         
 
-        output_img = matlab_engine.multiple_seeds_py(image_name, float(distance_ratio), distance_type, int(neigbr_number),
-                                                     xSeedsMatlabCoordinates, ySeedsMatlabCoordinates, nargout=1)
-        print(output_img)
-        return jsonify({'result': output_img})
+        result = matlab_engine.multiple_seeds_py(image_name, float(distance_ratio), distance_type, int(neigbr_number),
+                                                     xSeedsMatlabCoordinates, ySeedsMatlabCoordinates, nargout=2)
+        print(type(result))
+        return jsonify({'result': result})
 
 @app.route("/fuzzy/step1", methods=['GET'])
 @app.route("/kmeans/step1", methods=['GET'])
@@ -99,10 +99,13 @@ def startMorphology():
         se_size = json['payload']['seSize']
  
     global clustered_images
-    processed_image = matlab_engine.morphology(str(filter_number),matlab.logical(clustered_images[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=1)  
+    result = matlab_engine.morphology(str(filter_number),matlab.logical(clustered_images[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=2)  
     clustered_images = []
-    clustered_images.append(processed_image)
-    return jsonify({'processedImage': processed_image})
+    print(result,'________________________-----------------------------')
+    print(result[0],'________________________-----------------------------')
+    clustered_images.append(result[0])
+
+    return jsonify({'response': result})
 
 # @app.route("/fuzzy/step1", methods=['GET'])
 # def startFuzzyStep1():

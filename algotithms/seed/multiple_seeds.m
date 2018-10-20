@@ -12,7 +12,7 @@ clear all;
 addpath(genpath('../utils'))
 fname = {'img_0308_a','img_0305_a','img_0299_a','img_0300_a','img_0122_e','img_0125_e','img_0144_e',...
     'img_0141_e','img_0142_e','img_0143_e','img_0144_e'};
-I = read_image_double_py(fname{1,2});
+I = read_image_double_py(fname{1,9});
 
 
 prompt = 'Enter number of neighbours (ex. 4 or 8) ';
@@ -35,14 +35,24 @@ number_of_seeds = size(xi,1);
 
 
 J = regiongrowing(I,neigbr_number,xi,yi,number_of_seeds); 
-addpath(genpath('../classification'))
-bin_image = im2bw(J,0.5);
-% [organ_name,distance,ref_props,props] = classify_mult_organs(bin_image);
-[organs,props] = classify_mult_organs(bin_image);
-% organ_name
+gray_img = bin_to_gray(J,I);
 
-figure;
-imshow([J,bin_image])
+% position =  [1 50];
+% value = [555 pi];
+% 
+% RGB = insertText(I,position,value,'AnchorPoint','LeftBottom');
+% 
+% figure;
+% imshow(RGB)
+
+
+
+addpath(genpath('../classification'))
+% bin_image = im2bw(J,0.5);
+[organs,props] = classify_mult_organs(J,gray_img,number_of_seeds);
+   
+% figure;
+% imshow([J,bin_image])
 
 % figure;
 % imshow(I+J,[]);
@@ -51,18 +61,6 @@ imshow([J,bin_image])
 % a = label2rgb(J);
 % imshow(a);
 
-% function [bin_image,props,centroid] = classify_organs(bin_image)
-% 
-%     classes = {'left kidney', 'right kidney','spine','liver', 'bowel loops', 'muscles', 'stomach'};
-%     properties = ["Area","Centroid","Perimeter","BoundingBox"];
-%     
-%     
-%     props = regionprops(bin_image,"Area","Centroid","Perimeter","BoundingBox",'MajorAxisLength','MinorAxisLength');
-% %     area = cat(1,props.Area);
-% %     centroid = cat(1,props.Centroid)
-% %     centroidX = centroid(1,1);
-% %     centroidY = centroid(1,2);
-% %     axis_ratio = cat(1,props.MajorAxisLength)/cat(1,props.MinorAxisLength)
 % end
 
 
@@ -156,6 +154,16 @@ end
 % Return the segmented area as logical matrix
 % output_img=output_img>1;
 
+end
+
+function gray_img = bin_to_gray(bin_img,gray_img)
+    for i=1:size(bin_img,1)
+        for j=1:size(bin_img,2)
+            if(bin_img(i,j) == 0)
+                gray_img(i,j) = 0;
+            end
+        end
+    end
 end
 
 

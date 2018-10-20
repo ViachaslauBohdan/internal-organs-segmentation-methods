@@ -5,7 +5,7 @@ im_sets = {'23_16_2006/','211_16_2005/','217_16_2017/','239_64_2006/','407_16_20
 
 
 
-im_set = im_sets{1,5};
+im_set = im_sets{1,3};
 
 
 path_to_folder = strcat('~/','Pulpit/magisterka/ct_images/',im_set,'SE3/');
@@ -17,6 +17,8 @@ im_amount = numel(filenames);
 im_array = cell(1,im_amount);
 for i=1:numel(filenames)
     im_array{i}=dicomread(strcat(path_to_folder,filenames(i))); 
+    info = dicominfo(strcat(path_to_folder,filenames(i)));
+    info.ImagePositionPatient
 end
 
 res = input('adjust images? (y/n):','s');
@@ -58,6 +60,8 @@ function im_array = cuthist(im_array,filenames)
 end
 
 function J = iterative_cut_hist(I)
+
+
 in_range1 = 0.65;
 in_range2 = 1;
 stop_first_loop = false;

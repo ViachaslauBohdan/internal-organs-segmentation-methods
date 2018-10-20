@@ -61,34 +61,48 @@
         </div>
       </div>
     </div>
-    <div id="buttons-wrapper" class="container-fluid" style="padding:0">
+    <div id="buttons-wrapper" class="container-fluid" style="padding:0;text-align:center">
       <div id="seed-wrapper">
         <div>
-          <button id="seed-button">Region growing</button>
+          <button id="seed-button" class="btn btn-secondary" style="width:30%">Region growing</button>
         </div>
-        <div id="seed-inputs-wrapper" style="margin-top:15px;">
-          <div>
-            <span>Region standart:</span>
-            <input name="seed" value="mean" type="radio" checked>Mean
-            <input name="seed" value="median" type="radio">Median
-          </div>
-          <div>
-            <span>Neighborhood:</span>
-            <input name="neighbours" value="4" type="radio" checked>4
-            <input name="neighbours" value="8" type="radio">8
-          </div>
-          <div>
-            <span>Distance ratio:</span>
-            <input type="number" name="seed" value="10" min="1" max="100">
-          </div>
-          <div id="seed-coords-wrapper">
-            <div style="display:inline-block">Choosen seed
-              <br> points coordinates:
+        <div id="seed-inputs-wrapper" style="margin-top:15px">
+          <div class="row">
+            <div class="offset-md-4 col-md-5" style="text-align:left;padding-left:7%">
+              <span class="options1">Region standart:</span>
+              <!-- <span class="seed-options-right"> -->
+                <input name="seed" value="mean" type="radio" checked>Mean
+                <input name="seed" value="median" type="radio">Median
+              <!-- </span> -->
             </div>
-            <div style="display:inline-block">
-              <ol id="seed-list">
-                <div id="no-seeds">No seed points choosen</div>
-              </ol>
+          </div>
+          <div class="row">
+            <div class="offset-md-4 col-md-5" style="text-align:left;padding-left:7%">
+              <span class="options2">Neighborhood:</span>
+              <!-- <span class="seed-options-right"> -->
+                <input name="neighbours" value="4" type="radio" checked>4
+                <input name="neighbours" value="8" type="radio">8
+              <!-- </span> -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="offset-md-4 col-md-5" style="text-align:left;padding-left:7%">
+              <span class="options3">Distance ratio:</span>
+              <!-- <span class="seed-options-right"> -->
+                <input type="number" name="seed" value="10" min="1" max="100">
+              <!-- </span> -->
+            </div>
+          </div>
+          <div id="seed-coords-wrapper" class="row" style="text-align:left">
+            <div class="offset-md-4 col-md-5" style="padding-left:7%">
+              <div style="display:inline-block" class="options4">Choosen seed
+                <br> points coordinates:
+              </div>
+              <div style="display:inline-block">
+                <ol id="seed-list">
+                  <div id="no-seeds">No seed points choosen</div>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
@@ -96,7 +110,7 @@
 
       <div id="kmeans-wrapper">
         <div>
-          <button id="kmeans-button">K-means</button>
+          <button id="kmeans-button" class="btn btn-secondary" style="width:30%">K-means</button>
         </div>
         <div id="kmeans-inputs-wrapper" style="margin-top:15px;">
           <div>
@@ -108,7 +122,7 @@
 
       <div id="fuzzy-wrapper">
         <div>
-          <button id="fuzzy-button">Fuzzy c-means</button>
+          <button id="fuzzy-button" class="btn btn-secondary" style="width:30%">Fuzzy c-means</button>
         </div>
         <div id="fuzzy-inputs-wrapper" style="margin-top:15px;">
           <div>
@@ -118,7 +132,7 @@
         </div>
       </div>
       <div id="processing-button-wrapper">
-        <button id="processing-button">START PROCESSING</button>
+        <button id="processing-button" class="btn btn-secondary" style="width:30%">START PROCESSING</button>
       </div>
     </div>
     <div id="spinner"></div>

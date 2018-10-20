@@ -101,8 +101,6 @@ def startMorphology():
     global clustered_images
     result = matlab_engine.morphology(str(filter_number),matlab.logical(clustered_images[int(image_index)]),xReconstructionCoords,yReconstructionCoords,float(se_size),nargout=2)  
     clustered_images = []
-    print(result,'________________________-----------------------------')
-    print(result[0],'________________________-----------------------------')
     clustered_images.append(result[0])
 
     return jsonify({'response': result})

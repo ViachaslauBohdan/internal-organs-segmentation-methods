@@ -49,8 +49,6 @@ input[type="file"] {
 #processing-button-wrapper>button {
   background: rebeccapurple;
   border-radius: 5px;
-  border: none;
-  height: 29px;
   color: white;
 }
 
@@ -118,4 +116,25 @@ button:not(#processing-button) {
 
 .filters-list>li:hover {
   cursor: pointer;
+}
+
+.seed-options-right {
+  position: absolute;
+  right: 0;
+}
+
+.options1 {
+  margin-right: 20px;
+}
+
+.options2 {
+  margin-right: 32px;
+}
+
+.options3 {
+  margin-right: 18px;
+}
+
+.options4 {
+  margin-right: -21px;
 }

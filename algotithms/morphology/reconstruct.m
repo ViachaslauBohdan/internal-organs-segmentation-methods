@@ -1,17 +1,25 @@
 function [output_img,marker] = reconstruct(image)
-%RECONSTRUCT Summary of this function goes here
-%   Detailed explanation goes here
-figure;
-% marker = roipoly(image);
-marker = logical(zeros(size(image)));
-
-imshow(image,[]);
 [xi,yi] = ginput;
 xi = round(xi);
 yi = round(yi);
-xi
-yi
-marker(yi,xi) = true;
+imshow(image,[]);
+
+if (islogical(image))
+    marker = logical(zeros(size(image)));
+    for i=1:size(xi,1)
+        marker(yi(i),xi(i)) = true;
+    end
+elseif (strcmp(class(image),'uint8'))
+    marker = uint8(zeros(size(image)));
+    for i=1:size(xi,1)
+        marker(yi(i),xi(i)) = uint8(255);
+    end
+elseif (strcmp(class(image),'double'))
+    marker = double(zeros(size(image)));
+    for i=1:size(xi,1)
+        marker(yi(i),xi(i)) = double(1);
+    end
+end
 figure;
 imshow(marker);
 title('marker');

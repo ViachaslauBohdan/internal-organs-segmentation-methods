@@ -20,8 +20,8 @@ function clustered_images = fuzzy_py_step1(num,clusterNum)
     
     for i = 1:clusterNum
         bin_images_array{1,i} = imbinarize(Unow(:,:,i),0.65);
-        figure;
-        imshow(bin_images_array{1,i})
+%        figure;
+%        imshow(bin_images_array{1,i})
         clustered_images{1,i} = pylist_from_matlab_matrix(bin_images_array{1,i});
     end
     
@@ -57,8 +57,8 @@ function image_to_process = choose_cluster(clusterNum,Unow)
     num = str2num(clustered_img_number);
     % image_to_process = imbinarize(Unow(:,:,num),0.5);
     image_to_process = Unow(:,:,num);
-    figure;
-    imshow(image_to_process);
+%    figure;
+%    imshow(image_to_process);
     title('image_to_process');
 end
 

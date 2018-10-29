@@ -1,4 +1,4 @@
-function [organs,props] = classify_organs(bin_image,gray_image,num_of_seeds)
+function [organs,props] = classify_organs(I, bin_image,gray_image)
     classes = {'left kidney', 'right kidney','spine','liver', 'bowel loops', 'muscles', 'stomach'};
     properties = ["Area","Centroid","Perimeter","BoundingBox"];
     
@@ -28,12 +28,23 @@ function [organs,props] = classify_organs(bin_image,gray_image,num_of_seeds)
         
         positions(prop_index,1) = organ.centroidX;
         positions(prop_index,2) = organ.centroidY;
+        if(organ.name=="right kidney")
+            positions(prop_index,2) = organ.centroidY + 25;
+        elseif(organ.name=="spleen")
+            positions(prop_index,1) = organ.centroidX + 25;
+            positions(prop_index,2) = organ.centroidY - 25;
+        end
         text{prop_index,1} = [organ.name];
     end
     text
-    RGB = insertText(gray_image,positions,text,'AnchorPoint','LeftBottom');
+    RGB = insertText(gray_image,positions,text,'FontSize',22,'AnchorPoint','LeftBottom');
     figure;
-    imshow(RGB)
+    subplot(1,2,1);
+    imshow(I);
+    title("Obraz początkowy");
+    subplot(1,2,2);
+    imshow(RGB);
+    title("Obraz po klasyfikacji");
         
 end
 
@@ -44,15 +55,6 @@ function [organ,dist_copy] = detect_organs(ref_props,props,consider_axis_ratio,p
     end
     [v,i] = min(distance);
     dist_copy = distance;
-   
-%     for ind=1:size(distance,2)
-%         XY_swap_error = eliminateXYswap(i,ref_props,props)
-%         if(XY_swap_error == true)
-%             dist_copy(i) = [];
-%             [v,i] = min(dist_copy);
-%         else break
-%         end
-%     end
     organ = ref_props{1,i};
     distance
 end
@@ -97,18 +99,6 @@ function [dist] = calculate_dist(ref_props,props,consider_axis_ratio,prop_index)
     dist = sqrt(sum(abs(v-v_ref).^2));
 end
 
-function XY_swap_error = eliminateXYswap(i,ref_props,props)
-    v_ref = extract_ref_props(ref_props{1,i},false);
-    v = extract_props(props,false);
-    abs(v_ref(1) - v(2))
-    abs(v_ref(1) - v(1))
-    if( abs(v_ref(1) - v(2))*1 < abs(v_ref(1) - v(1)) & abs(v_ref(2) - v(1))*1 < abs(v_ref(2) - v(2)))
-        XY_swap_error = true;
-    else
-        XY_swap_error = false;
-    end
-end
-
 function ref_props = init_ref_props()
     ref_props = {};
     
@@ -133,7 +123,7 @@ function ref_props = init_ref_props()
     obj.centroidY = 313.48;
     obj.axis_ratio = 1.1;
     obj.area = 10;
-    obj.mean_intensity = 0.87;
+    obj.mean_intensity = 0.8;
     ref_props{1,3} = obj;
 
     obj.name = 'liver';
@@ -141,7 +131,7 @@ function ref_props = init_ref_props()
     obj.centroidY = 262.47;
     obj.axis_ratio = 1.4;
     obj.area = 100;
-    obj.mean_intensity = 0.775;
+    obj.mean_intensity = 0.65;
     ref_props{1,4} = obj;
 
 %     obj.name = 'muscles';
@@ -177,9 +167,17 @@ function ref_props = init_ref_props()
     
     obj.name = 'gallbladder';
     obj.centroidX =  236.27;
-    obj.centroidY = 156.58;;
+    obj.centroidY = 156.58;
     obj.axis_ratio = 1;
     obj.area = 20;
     obj.mean_intensity = 0.52;
     ref_props{1,8} = obj;
+    
+    obj.name = 'spleen';
+    obj.centroidX =  335;
+    obj.centroidY = 315;
+    obj.axis_ratio = 1;
+    obj.area = 20;
+    obj.mean_intensity = 0.6825;
+    ref_props{1,9} = obj;
 end

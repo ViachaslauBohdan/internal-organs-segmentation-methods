@@ -14,3 +14,5 @@ http://www.idlcoyote.com/fileio_tips/hounsfield.html
 https://www.mathworks.com/help/images/ref/imbinarize.html#mw_e4a539f4-6c30-4ea2-bd07-1aad59fc9cea
 http://gdcm.sourceforge.net/wiki/index.php/Hounsfield_Unit
 https://medium.com/datadriveninvestor/deep-learning-in-medical-imaging-ddc38ced7caf
+https://ww2.mathworks.cn/tagteam/64199_91822v00_eddins_final.pdf <---- reconstruction
+http://www.ece.uvic.ca/~aalbu/computer%20vision%202010/L16.%20Segmentation-region-based.pdf <--- region growing formulation

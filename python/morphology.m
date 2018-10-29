@@ -1,14 +1,25 @@
 function [seg_image,organs] = morpho_main(filter_number,mask,x_reconstruction_coords,y_reconstruction_coords,se_radius)
-y_reconstruction_coords
-x_reconstruction_coords
+yi = y_reconstruction_coords(:)
+xi = x_reconstruction_coords(:)
 
         if strcmp(filter_number,'1')
-            marker = false(size(mask));
-            for i=1:size(x_reconstruction_coords)
-                marker(y_reconstruction_coords(i),x_reconstruction_coords(i)) = true;
+
+        if (islogical(mask))
+            marker = logical(zeros(size(mask)));
+            for i=1:size(xi,1)
+                marker(yi(i),xi(i)) = true;
             end
-            size(mask)
-            size(marker)
+        elseif (strcmp(class(mask),'uint8'))
+            marker = uint8(zeros(size(mask)));
+            for i=1:size(xi,1)
+                marker(yi(i),xi(i)) = uint8(255);
+            end
+        elseif (strcmp(class(mask),'double'))
+            marker = double(zeros(size(mask)));
+            for i=1:size(xi,1)
+                marker(yi(i),xi(i)) = double(1);
+            end
+        end
              [image_to_process] = reconstruct(marker,mask);
         elseif strcmp(filter_number,'2')
             [image_to_process] = fill_holes(mask);
@@ -24,23 +35,12 @@ x_reconstruction_coords
 end
 
 function [output_img] = reconstruct(marker,mask)
-% figure;
-% marker = roipoly(image);
-% p2 = min(im2uint8(p),im1);
 output_img = imreconstruct(marker,mask);
-figure;
-imshow(marker);
-figure;
-imshow(mask);
-figure;
-imshow(output_img)
 end
 
 
 function [im_filled] = fill_holes(image)
 im_filled = imfill(image,'holes');
-figure;
-imshow(im_filled);
 end
 
 function [output_img] = open_by_reconst(image,se_radius)
@@ -49,8 +49,6 @@ se = strel('disk',se_radius);
 im_opened = imopen(image,se);
 marker = im_opened;
 output_img = imreconstruct(marker,image);
-figure;
-imshow(output_img);
 end
 
 function [output_img] = close_by_reconst(image,se_radius)
@@ -59,8 +57,6 @@ se = strel('disk',se_radius);
 im_closed = imclose(image,se);
 marker = im_closed;
 output_img = imreconstruct(marker,image);
-figure;
-imshow(output_img);
 end
 
 function [pylist] = generate_pylist(matrix)

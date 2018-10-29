@@ -1,20 +1,26 @@
+% close all;
+% addpath(genpath('../../utils'))
+% I = read_image(3);
+
 close all;
-addpath(genpath('../../utils'))
-I = read_image(3);
-% k=7;
+addpath(genpath('../../for_python'))
+I = read_image_uint8_py('img_0127_f');
+
 num_of_clusters = input(['choose the number of clusters (e.x. 5):']);
 bin_images_array = {1,num_of_clusters};
 
 [a,img,im_result,img_hist,hist_value,cluster,cluster_count,closest_cluster,...
     min_distance,imresult,clustersresult] = kmeansclustering(I,num_of_clusters);
 figure;
-imshow(I,[])
-figure;
-imhist(I);
-figure;
+subplot(3,3,1);
+imshow(I,[]);
+title("original image");
+subplot(3,3,2);
+imshow(label2rgb(im_result));
+title("labeled image");
 for i = 1:num_of_clusters
     bin_images_array{1,i} = im_result == i;
-    subplot(floor(sqrt(num_of_clusters)),floor(sqrt(num_of_clusters))+2,i);
+    subplot(3,3,i+2);
     imshow(label2rgb(bin_images_array{1,i},@jet,'black'),[]);
     title(strcat('cluster',{' '},int2str(i)));
 end
@@ -82,8 +88,8 @@ while (sum(sum(abs(old-cluster))) ~=0)
 		if (cluster_count(i) == 0)
 			cluster(i) = uint8(rand*255);
 		else
-			cluster(i) = uint8(sum(img_hist(closest_cluster==i).*hist_value(closest_cluster==i))/cluster_count(i));
-           % ŚREDNIA WAŻONA !!!
+			cluster(i) = uint8(sum(img_hist(closest_cluster==i).*hist_value(closest_cluster==i))/cluster_count(i))
+           % ŚREDNIA!!!
         end;
 	end;
 % 	    pause;

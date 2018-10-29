@@ -11,12 +11,21 @@ clear all;
 
 addpath(genpath('../utils'))
 fname = {'img_0308_a','img_0305_a','img_0299_a','img_0300_a','img_0122_e','img_0125_e','img_0144_e',...
-    'img_0141_e','img_0142_e','img_0143_e','img_0144_e'};
-I = read_image_double_py(fname{1,9});
+         'img_0141_e','img_0142_e','img_0143_e','img_0089_e','img_0102_f','img_0105_f','img_0108_f',...
+         'img_0111_f','img_0114_f','img_0100_f','img_0071_d','img_0092_c', 'img_0289_a','img_0301_a'};
+I = read_image_double_py(fname{1,21});
 
 
-prompt = 'Enter number of neighbours (ex. 4 or 8) ';
+prompt = 'Enter number of neighbours (ex. 4 or 8): ';
 neigbr_number = input(prompt);
+
+prompt = ['Enter mean type' newline ...
+    '1) mean' newline ...
+    '2) median' newline ':']
+mean_type = input(prompt)
+
+prompt = 'Enter region max distance [0 - 1]: '
+reg_maxdist = input(prompt);
 
 
 
@@ -34,8 +43,23 @@ yi = round(yi);
 number_of_seeds = size(xi,1);
 
 
-J = regiongrowing(I,neigbr_number,xi,yi,number_of_seeds); 
+J = regiongrowing(I,neigbr_number,xi,yi,number_of_seeds,reg_maxdist,mean_type); 
+% figure;
+% imshow([J,J>1]);
+% figure;imshow(label2rgb(J))
+
+
+% for i=1:max(J(:))
+%     figure('Name',int2str(i));
+%     imshow(J==i);
+%     title(int2str(i));
+% end
+
+J = J > 1;
+
 gray_img = bin_to_gray(J,I);
+addpath('../utils')
+render_seg_subplots(I,J);
 
 % position =  [1 50];
 % value = [555 pi];
@@ -45,38 +69,25 @@ gray_img = bin_to_gray(J,I);
 % figure;
 % imshow(RGB)
 
-
-
 addpath(genpath('../classification'))
-% bin_image = im2bw(J,0.5);
-[organs,props] = classify_mult_organs(J,gray_img,number_of_seeds);
-   
+[organs,props] = classify_mult_organs(I, J,gray_img);
 % figure;
-% imshow([J,bin_image])
-
-% figure;
-% imshow(I+J,[]);
-% figure;
-% imshow(J,[]);
-% a = label2rgb(J);
-% imshow(a);
-
-% end
+% imshow([J,gray_img])
+ 
 
 
    
-function [output_img,b]=regiongrowing(input_img,neigbr_number,y,x,number_of_seeds,reg_maxdist)
+function [output_img,b]=regiongrowing(input_img,neigbr_number,y,x,number_of_seeds,reg_maxdist,mean_type)
 
-if(exist('reg_maxdist','var')==0), reg_maxdist=0.1; end
+if(exist('reg_maxdist','var')==0), reg_maxdist=0.07; end
 % if(exist('y','var')==0), figure, imshow(input_img,[]); [y,x]=getpts;
 %     y=round(y(1)); x=round(x(1)); end
-
 
 output_img = zeros(size(input_img)); % Out
 
 input_img_size = size(input_img); % Dimensions of input image
 
-reg_mean = input_img(x,y); % The mean of the segmented region
+%reg_mean = input_img(x,y) % The mean of the segmented region
 region_size = 1; % Number of pixels in region
 
 % Free memory to store neighbours of the (segmented) region
@@ -106,14 +117,26 @@ end
 % higher than a certain treshold
 xi = x;
 yi = y;
+total_regions_size = 0;
+region_size = 0;
 for i = 1:number_of_seeds
     x = xi(i);
     y = yi(i);
     reg_mean = input_img(x,y);
-    region_size = 1;
-    pixdist = 0;
     
-    while(pixdist<reg_maxdist && region_size<numel(input_img))
+    wrong_seed_selected = logical(0);
+    if(output_img(x,y) ~= 0)
+        wrong_seed_selected = logical(1);
+    end
+    
+    total_regions_size = total_regions_size + region_size;
+    region_size = 1;
+    
+    pixdist = 0;
+    memory_free = 10000; memory_possesed=0;
+    neigbor_list = zeros(memory_free,3);
+    
+    while(pixdist<reg_maxdist && total_regions_size<numel(input_img) && wrong_seed_selected==0)
         % Add new neighbors pixels
         for j=1:neigbr_number,
             % Calculate the neighbour coordinate
@@ -140,7 +163,14 @@ for i = 1:number_of_seeds
         output_img(x,y)=(i+1); region_size=region_size+1;
 
         % Calculate the new mean of the region
-        reg_mean= (reg_mean*region_size + neigbor_list(index,3))/(region_size+1);
+        
+        if(mean_type==1)
+            reg_mean= (reg_mean*region_size + neigbor_list(index,3))/(region_size+1);
+        else
+            ind = find(neigbor_list(:,3)>0);
+            neigbor_list(ind,3);
+            reg_mean = median(neigbor_list(ind,3));
+        end
 
         % Save the x and y coordinates of the pixel (for the neighbour add proccess)
         x = neigbor_list(index,1); y = neigbor_list(index,2);

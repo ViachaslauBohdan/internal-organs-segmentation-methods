@@ -1,5 +1,5 @@
 function [ Unow, center, now_obj_fcn ] = FCMforImage( img, clusterNum )
-% Ô­Ê¼FCMËã·¨ÓÃÓÚÍ¼Ïñ·Ö¸îµÄ´úÂë
+% Ô­Ê¼FCMï¿½ã·¨ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Ö¸ï¿½Ä´ï¿½ï¿½ï¿½
 % demo
 % img = double(imread('brain.tif'));
 % clusterNum = 3;
@@ -20,18 +20,18 @@ expoNum = 2;      % fuzzification parameter
 epsilon = 0.001;  % stopping condition
 mat_iter = 100;   % number of maximun iteration
 
-% ³õÊ¼»¯ U
+% ï¿½ï¿½Ê¼ï¿½ï¿½ U
 Upre = rand(row, col, clusterNum);
 dep_sum = sum(Upre, 3);
 dep_sum = repmat(dep_sum, [1,1, clusterNum]);
 Upre = Upre./dep_sum;
 
-center = zeros(clusterNum,1); % ´æ´¢µãµÄÖµ
-% ¼ÆËã¾ÛÀàÖÐÐÄµã
+center = zeros(clusterNum,1); % ï¿½æ´¢ï¿½ï¿½ï¿½Öµ
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½
 for i=1:clusterNum
     center(i,1) = sum(sum(Upre(:,:,i).*img))/sum(sum(Upre(:,:,i)));
 end
-% ¼ÆËã´ú¼Ûº¯Êý
+% ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ûºï¿½ï¿½ï¿½
 pre_obj_fcn = 0;
 for i=1:clusterNum
     pre_obj_fcn = pre_obj_fcn + sum(sum((Upre(:,:,i) .*img - center(i)).^2));
@@ -39,11 +39,11 @@ end
 fprintf('Initial objective fcn = %f\n', pre_obj_fcn);
 
 for iter = 1:mat_iter    
-    %¸üÐÂUnow(Öðµã¸üÐÂ)
+    %ï¿½ï¿½ï¿½ï¿½Unow(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½)
     Unow = zeros(size(Upre));
     for i=1:row
         for j=1:col
-            % Ä³¸öÏñËØµãµÄUnow¸üÐÂ
+            % Ä³ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½Unowï¿½ï¿½ï¿½ï¿½
             for uII = 1:clusterNum
                 tmp = 0;
                 for uJJ = 1:clusterNum
@@ -62,11 +62,11 @@ for iter = 1:mat_iter
     end
     fprintf('Iter = %d, Objective = %f\n', iter, now_obj_fcn);
 
-    if max(max(max(abs(Unow-Upre))))<epsilon || abs(now_obj_fcn - pre_obj_fcn)<epsilon %ÒýÈë2¸öÅÐ¶¨
+    if max(max(max(abs(Unow-Upre))))<epsilon || abs(now_obj_fcn - pre_obj_fcn)<epsilon %ï¿½ï¿½ï¿½ï¿½2ï¿½ï¿½ï¿½Ð¶ï¿½
         break;
     else
         Upre = Unow.^expoNum;
-        % ÖØÐÂ¼ÆËã¾ÛÀàÖÐÐÄµã
+        % ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½
         for i=1:clusterNum
             center(i,1) = sum(sum(Upre(:,:,i).*img))/sum(sum(Upre(:,:,i)));
         end

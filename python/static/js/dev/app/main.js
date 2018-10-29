@@ -47,7 +47,11 @@ $(document).ready(function () {
             label = el.name
             x = el.centroidX
             y = el.centroidY
-            console.log(el, label)
+            if(el.name==='right kidney') y = y + 25
+            else if(el.name==='spleen') {
+              x = x + 25
+              y = y - 25
+            }
             ctx.fillText(label, x, y)
           })
 

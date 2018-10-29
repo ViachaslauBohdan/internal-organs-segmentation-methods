@@ -6,7 +6,6 @@ function [clustered_images] = kmeans_py_step1(num,num_of_clusters)
 
     [a,img,im_result,img_hist,hist_value,cluster,cluster_count,closest_cluster,...
         min_distance,imresult,clustersresult] = kmeansclustering(I,num_of_clusters);
-    figure;
     
     clustered_images = cell(1,num_of_clusters);
     

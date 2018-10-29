@@ -28,8 +28,8 @@ end
 
 lowest_val = ((info.WindowCenter - info.WindowWidth/2) - info.RescaleIntercept)  / info.RescaleSlope
 highest_val =((info.WindowCenter + info.WindowWidth/2)  - info.RescaleIntercept) / info.RescaleSlope
-figure;
-imshow(I,[lowest_val, highest_val]);
+%figure;
+%imshow(I,[lowest_val, highest_val]);
 
 [lowest_row, lowest_col] = find(I==lowest_val,1);
 [highest_row, highest_col] = find(I==highest_val,1);

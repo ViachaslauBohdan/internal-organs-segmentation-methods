@@ -5,7 +5,7 @@ im_sets = {'23_16_2006/','211_16_2005/','217_16_2017/','239_64_2006/','407_16_20
 
 
 
-im_set = im_sets{1,3};
+im_set = im_sets{1,5};
 
 
 path_to_folder = strcat('~/','Pulpit/magisterka/ct_images/',im_set,'SE3/');
